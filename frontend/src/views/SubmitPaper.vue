@@ -1,0 +1,775 @@
+<template>
+  <div class="submit-paper-container">
+    <!-- 页面头部 -->
+    <div class="page-header">
+      <h1 class="page-title">论文提交</h1>
+      <p class="page-description">请填写完整的论文信息，提交后将进入审核流程</p>
+    </div>
+    
+    <!-- 步骤指示器 -->
+    <el-steps :active="currentStep" align-center class="submit-steps">
+      <el-step title="基本信息" description="填写论文基础信息" />
+      <el-step title="期刊信息" description="选择发表期刊" />
+      <el-step title="作者信息" description="填写作者详情" />
+      <el-step title="文件上传" description="上传论文文件" />
+      <el-step title="提交审核" description="确认并提交" />
+    </el-steps>
+    
+    <!-- 表单内容 -->
+    <div class="form-container">
+      <el-form
+        ref="paperFormRef"
+        :model="paperForm"
+        :rules="paperRules"
+        label-width="120px"
+        size="large"
+      >
+        <!-- 步骤1：基本信息 -->
+        <div v-show="currentStep === 0" class="step-content">
+          <div class="step-title">
+            <el-icon><Document /></el-icon>
+            基本信息
+          </div>
+          
+          <el-form-item label="论文标题" prop="title">
+            <el-input
+              v-model="paperForm.title"
+              placeholder="请输入论文标题（中英文均可）"
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+          
+          <el-form-item label="论文类型" prop="type">
+            <el-select v-model="paperForm.type" placeholder="请选择论文类型">
+              <el-option label="期刊论文" value="journal" />
+              <el-option label="学会论文" value="conference" />
+              <el-option label="学位论文" value="degree" />
+            </el-select>
+          </el-form-item>
+          
+          <el-form-item label="发表年度" prop="publishYear">
+            <el-date-picker
+              v-model="paperForm.publishYear"
+              type="year"
+              placeholder="请选择发表年度"
+              format="YYYY"
+              value-format="YYYY"
+            />
+          </el-form-item>
+          
+          <el-form-item label="语种" prop="language">
+            <el-select v-model="paperForm.language" placeholder="请选择语种">
+              <el-option label="中文" value="chinese" />
+              <el-option label="英文" value="english" />
+              <el-option label="其他" value="other" />
+            </el-select>
+          </el-form-item>
+          
+          <el-form-item label="DOI" prop="doi">
+            <el-input
+              v-model="paperForm.doi"
+              placeholder="请输入DOI（如：10.1038/nature12373）"
+            />
+          </el-form-item>
+        </div>
+        
+        <!-- 步骤2：期刊信息 -->
+        <div v-show="currentStep === 1" class="step-content">
+          <div class="step-title">
+            <el-icon><Search /></el-icon>
+            期刊信息
+          </div>
+          
+          <el-form-item label="期刊搜索" prop="journal">
+            <el-autocomplete
+              v-model="journalSearchKeyword"
+              :fetch-suggestions="searchJournals"
+              placeholder="请输入期刊名称或ISSN号进行搜索"
+              clearable
+              style="width: 100%"
+              @select="selectJournal"
+              :loading="journalSearchLoading"
+            >
+              <template #default="{ item }">
+                <div class="journal-suggestion">
+                  <div class="journal-name">{{ item.name }}</div>
+                  <div class="journal-info">
+                    <el-tag size="small" type="info">{{ item.issn }}</el-tag>
+                    <el-tag size="small" :type="getPartitionType(item.partition)">
+                      {{ item.partition }}分区
+                    </el-tag>
+                  </div>
+                </div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
+          
+          <el-form-item label="期刊名称" prop="journalName">
+            <el-input
+              v-model="paperForm.journalName"
+              placeholder="期刊全称"
+              readonly
+            />
+          </el-form-item>
+          
+          <el-row :gutter="16">
+            <el-col :span="12">
+              <el-form-item label="ISSN编号" prop="issn">
+                <el-input
+                  v-model="paperForm.issn"
+                  placeholder="ISSN编号"
+                  readonly
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="期刊分区" prop="partition">
+                <el-input
+                  v-model="paperForm.partition"
+                  placeholder="期刊分区"
+                  readonly
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          
+          <el-form-item label="发表单位排序" prop="institutionOrder">
+            <el-input-number
+              v-model="paperForm.institutionOrder"
+              :min="1"
+              :max="10"
+              placeholder="本单位在作者单位中的排序"
+            />
+          </el-form-item>
+        </div>
+        
+        <!-- 步骤3：作者信息 -->
+        <div v-show="currentStep === 2" class="step-content">
+          <div class="step-title">
+            <el-icon><User /></el-icon>
+            作者信息
+          </div>
+          
+          <el-form-item label="第一作者" prop="firstAuthor">
+            <el-input
+              v-model="paperForm.firstAuthor"
+              placeholder="第一作者姓名"
+            />
+          </el-form-item>
+          
+          <el-form-item label="第一通讯作者" prop="correspondingAuthor">
+            <el-input
+              v-model="paperForm.correspondingAuthor"
+              placeholder="第一通讯作者姓名"
+            />
+          </el-form-item>
+          
+          <el-form-item label="所有作者" prop="allAuthors">
+            <el-input
+              v-model="paperForm.allAuthors"
+              type="textarea"
+              :rows="3"
+              placeholder="请按顺序输入所有作者姓名，用分号分隔"
+            />
+          </el-form-item>
+          
+          <el-form-item label="作者单位" prop="authorInstitutions">
+            <el-input
+              v-model="paperForm.authorInstitutions"
+              type="textarea"
+              :rows="3"
+              placeholder="请输入所有作者单位，与作者顺序对应"
+            />
+          </el-form-item>
+        </div>
+        
+        <!-- 步骤4：文件上传 -->
+        <div v-show="currentStep === 3" class="step-content">
+          <div class="step-title">
+            <el-icon><Upload /></el-icon>
+            文件上传
+          </div>
+          
+          <el-form-item label="论文原文" prop="paperFile">
+            <el-upload
+              ref="uploadRef"
+              class="paper-upload"
+              :drag="true"
+              :multiple="false"
+              :accept="'.pdf,.docx'"
+              :before-upload="beforeUpload"
+              :on-progress="handleUploadProgress"
+              :on-success="handleUploadSuccess"
+              :on-error="handleUploadError"
+              :auto-upload="false"
+              v-model:file-list="fileList"
+            >
+              <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+              <div class="el-upload__text">
+                将文件拖到此处，或<em>点击上传</em>
+              </div>
+              <template #tip>
+                <div class="el-upload__tip">
+                  支持PDF、DOCX格式，文件大小不超过50MB
+                </div>
+              </template>
+            </el-upload>
+          </el-form-item>
+          
+          <!-- 上传进度 -->
+          <div v-if="uploadProgress > 0 && uploadProgress < 100" class="upload-progress">
+            <el-progress :percentage="uploadProgress" :status="uploadStatus" />
+            <p>正在上传文件，请稍候...</p>
+          </div>
+          
+          <!-- 已上传文件 -->
+          <div v-if="paperForm.paperFile" class="uploaded-file">
+            <div class="file-info">
+              <el-icon><Document /></el-icon>
+              <span>{{ paperForm.paperFile.name }}</span>
+              <el-tag type="success" size="small">已上传</el-tag>
+              <el-button
+                text
+                type="danger"
+                size="small"
+                @click="removeFile"
+              >
+                删除
+              </el-button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 步骤5：提交审核 -->
+        <div v-show="currentStep === 4" class="step-content">
+          <div class="step-title">
+            <el-icon><Check /></el-icon>
+            提交审核
+          </div>
+          
+          <!-- 信息预览 -->
+          <div class="paper-preview">
+            <h3>论文信息预览</h3>
+            <el-descriptions :column="2" border>
+              <el-descriptions-item label="论文标题">{{ paperForm.title }}</el-descriptions-item>
+              <el-descriptions-item label="论文类型">{{ getTypeText(paperForm.type) }}</el-descriptions-item>
+              <el-descriptions-item label="期刊名称">{{ paperForm.journalName }}</el-descriptions-item>
+              <el-descriptions-item label="期刊分区">{{ paperForm.partition }}</el-descriptions-item>
+              <el-descriptions-item label="第一作者">{{ paperForm.firstAuthor }}</el-descriptions-item>
+              <el-descriptions-item label="通讯作者">{{ paperForm.correspondingAuthor }}</el-descriptions-item>
+              <el-descriptions-item label="发表年度">{{ paperForm.publishYear }}</el-descriptions-item>
+              <el-descriptions-item label="语种">{{ getLanguageText(paperForm.language) }}</el-descriptions-item>
+              <el-descriptions-item label="DOI">{{ paperForm.doi || '未填写' }}</el-descriptions-item>
+              <el-descriptions-item label="论文文件">
+                {{ paperForm.paperFile ? paperForm.paperFile.name : '未上传' }}
+              </el-descriptions-item>
+            </el-descriptions>
+          </div>
+        </div>
+        
+        <!-- 操作按钮 -->
+        <div class="form-actions">
+          <el-button
+            v-if="currentStep > 0"
+            size="large"
+            @click="prevStep"
+          >
+            上一步
+          </el-button>
+          
+          <el-button
+            v-if="currentStep < 4"
+            type="primary"
+            size="large"
+            @click="nextStep"
+          >
+            下一步
+          </el-button>
+          
+          <div v-if="currentStep === 4" class="submit-actions">
+            <el-button
+              size="large"
+              @click="saveDraft"
+              :loading="savingDraft"
+            >
+              保存草稿
+            </el-button>
+            <el-button
+              type="primary"
+              size="large"
+              @click="submitPaper"
+              :loading="submitting"
+            >
+              提交审核
+            </el-button>
+          </div>
+        </div>
+      </el-form>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, reactive, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { papersApi } from '../api/papers'
+import { journalsApi } from '../api/journals'
+
+const router = useRouter()
+
+// 响应式数据
+const paperFormRef = ref(null)
+const uploadRef = ref(null)
+const currentStep = ref(0)
+const journalSearchKeyword = ref('')
+const journalSearchLoading = ref(false)
+const fileList = ref([])
+const uploadProgress = ref(0)
+const uploadStatus = ref('success')
+const savingDraft = ref(false)
+const submitting = ref(false)
+
+// 表单数据
+const paperForm = reactive({
+  title: '',
+  type: '',
+  publishYear: '',
+  language: '',
+  doi: '',
+  journalName: '',
+  issn: '',
+  partition: '',
+  institutionOrder: 1,
+  firstAuthor: '',
+  correspondingAuthor: '',
+  allAuthors: '',
+  authorInstitutions: '',
+  paperFile: null
+})
+
+// 表单验证规则
+const paperRules = {
+  title: [
+    { required: true, message: '请输入论文标题', trigger: 'blur' },
+    { min: 5, max: 200, message: '标题长度在 5 到 200 个字符', trigger: 'blur' }
+  ],
+  type: [
+    { required: true, message: '请选择论文类型', trigger: 'change' }
+  ],
+  publishYear: [
+    { required: true, message: '请选择发表年度', trigger: 'change' }
+  ],
+  language: [
+    { required: true, message: '请选择语种', trigger: 'change' }
+  ],
+  journalName: [
+    { required: true, message: '请选择期刊', trigger: 'blur' }
+  ],
+  firstAuthor: [
+    { required: true, message: '请输入第一作者', trigger: 'blur' }
+  ],
+  correspondingAuthor: [
+    { required: true, message: '请输入第一通讯作者', trigger: 'blur' }
+  ]
+}
+
+// 搜索期刊
+const searchJournals = async (queryString, callback) => {
+  if (!queryString || queryString.length < 2) {
+    callback([])
+    return
+  }
+  
+  journalSearchLoading.value = true
+  
+  try {
+    const response = await journalsApi.searchJournals({
+      keyword: queryString,
+      year: '2023'
+    })
+    
+    const results = response.data.map(journal => ({
+      value: journal.name,
+      name: journal.name,
+      issn: journal.issn,
+      partition: journal.partition,
+      ...journal
+    }))
+    
+    callback(results)
+  } catch (error) {
+    console.error('搜索期刊失败:', error)
+    // 返回模拟数据
+    const mockJournals = [
+      {
+        value: 'Nature',
+        name: 'Nature',
+        issn: '0028-0836',
+        partition: 'Q1'
+      },
+      {
+        value: 'Science',
+        name: 'Science',
+        issn: '0036-8075',
+        partition: 'Q1'
+      },
+      {
+        value: 'Cell',
+        name: 'Cell',
+        issn: '0092-8674',
+        partition: 'Q1'
+      }
+    ].filter(journal => 
+      journal.name.toLowerCase().includes(queryString.toLowerCase()) ||
+      journal.issn.includes(queryString)
+    )
+    
+    callback(mockJournals)
+  } finally {
+    journalSearchLoading.value = false
+  }
+}
+
+// 选择期刊
+const selectJournal = (journal) => {
+  paperForm.journalName = journal.name
+  paperForm.issn = journal.issn
+  paperForm.partition = journal.partition
+}
+
+// 获取分区类型
+const getPartitionType = (partition) => {
+  if (partition === 'Q1') return 'success'
+  if (partition === 'Q2') return 'info'
+  if (partition === 'Q3') return 'warning'
+  return 'danger'
+}
+
+// 获取类型文本
+const getTypeText = (type) => {
+  const typeMap = {
+    'journal': '期刊论文',
+    'conference': '学会论文',
+    'degree': '学位论文'
+  }
+  return typeMap[type] || '未知'
+}
+
+// 获取语种文本
+const getLanguageText = (language) => {
+  const languageMap = {
+    'chinese': '中文',
+    'english': '英文',
+    'other': '其他'
+  }
+  return languageMap[language] || '未知'
+}
+
+// 文件上传前检查
+const beforeUpload = (file) => {
+  const isValidType = file.type === 'application/pdf' || 
+                     file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  const isValidSize = file.size / 1024 / 1024 < 50
+  
+  if (!isValidType) {
+    ElMessage.error('文件格式不正确，请上传PDF或DOCX文件')
+    return false
+  }
+  
+  if (!isValidSize) {
+    ElMessage.error('文件大小不能超过50MB')
+    return false
+  }
+  
+  return true
+}
+
+// 文件上传进度
+const handleUploadProgress = (evt) => {
+  uploadProgress.value = Math.round((evt.loaded * 100) / evt.total)
+}
+
+// 文件上传成功
+const handleUploadSuccess = (response, file) => {
+  uploadProgress.value = 100
+  uploadStatus.value = 'success'
+  paperForm.paperFile = {
+    name: file.name,
+    url: response.url,
+    id: response.id
+  }
+  ElMessage.success('文件上传成功')
+}
+
+// 文件上传失败
+const handleUploadError = (error) => {
+  uploadProgress.value = 0
+  uploadStatus.value = 'exception'
+  ElMessage.error('文件上传失败，请重试')
+}
+
+// 删除文件
+const removeFile = () => {
+  paperForm.paperFile = null
+  fileList.value = []
+  uploadProgress.value = 0
+}
+
+// 下一步
+const nextStep = async () => {
+  if (!paperFormRef.value) return
+  
+  // 验证当前步骤的字段
+  const fieldsToValidate = getStepFields(currentStep.value)
+  
+  try {
+    await paperFormRef.value.validateField(fieldsToValidate)
+    
+    // 特殊验证
+    if (currentStep.value === 3 && !paperForm.paperFile) {
+      ElMessage.error('请上传论文文件')
+      return
+    }
+    
+    currentStep.value++
+  } catch (error) {
+    ElMessage.error('请完善当前步骤的信息')
+  }
+}
+
+// 上一步
+const prevStep = () => {
+  if (currentStep.value > 0) {
+    currentStep.value--
+  }
+}
+
+// 获取步骤对应的字段
+const getStepFields = (step) => {
+  const stepFieldsMap = {
+    0: ['title', 'type', 'publishYear', 'language'],
+    1: ['journalName'],
+    2: ['firstAuthor', 'correspondingAuthor'],
+    3: [],
+    4: []
+  }
+  return stepFieldsMap[step] || []
+}
+
+// 保存草稿
+const saveDraft = async () => {
+  savingDraft.value = true
+  
+  try {
+    const formData = {
+      ...paperForm,
+      status: 'draft'
+    }
+    
+    await papersApi.submitPaper(formData)
+    ElMessage.success('草稿保存成功')
+    router.push('/my-papers')
+  } catch (error) {
+    ElMessage.error('保存草稿失败')
+  } finally {
+    savingDraft.value = false
+  }
+}
+
+// 提交论文
+const submitPaper = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '确定要提交论文进行审核吗？提交后将无法修改。',
+      '确认提交',
+      {
+        confirmButtonText: '确定提交',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+    
+    submitting.value = true
+    
+    const formData = {
+      ...paperForm,
+      status: 'pending'
+    }
+    
+    await papersApi.submitPaper(formData)
+    ElMessage.success('论文提交成功，请等待审核')
+    router.push('/my-papers')
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('提交失败，请稍后重试')
+    }
+  } finally {
+    submitting.value = false
+  }
+}
+</script>
+
+<style scoped>
+.submit-paper-container {
+  padding: 24px;
+}
+
+.page-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.page-description {
+  color: var(--text-secondary);
+  font-size: 16px;
+  margin: 0;
+}
+
+.submit-steps {
+  margin-bottom: 48px;
+}
+
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: var(--shadow-card);
+}
+
+.step-content {
+  min-height: 400px;
+}
+
+.step-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.journal-suggestion {
+  padding: 8px 0;
+}
+
+.journal-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.journal-info {
+  display: flex;
+  gap: 8px;
+}
+
+.paper-upload {
+  width: 100%;
+}
+
+.paper-upload :deep(.el-upload-dragger) {
+  border-radius: 8px;
+  border: 2px dashed var(--border-color);
+  transition: border-color 0.3s ease;
+}
+
+.paper-upload :deep(.el-upload-dragger:hover) {
+  border-color: var(--primary-color);
+}
+
+.upload-progress {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--bg-light);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.uploaded-file {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--primary-light);
+  border-radius: 8px;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.file-info span {
+  flex: 1;
+  font-weight: 500;
+}
+
+.paper-preview {
+  background: var(--bg-light);
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.paper-preview h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-light);
+}
+
+.submit-actions {
+  display: flex;
+  gap: 16px;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .submit-paper-container {
+    padding: 16px;
+  }
+  
+  .form-container {
+    padding: 24px 16px;
+  }
+  
+  .submit-steps {
+    margin-bottom: 24px;
+  }
+  
+  .step-content {
+    min-height: 300px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .submit-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+</style>

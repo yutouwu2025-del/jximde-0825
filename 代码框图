@@ -1,0 +1,13 @@
+project/
+├── CLAUDE.md                   # 团队协调规则
+├── .claude/prompts/
+│   ├── product_manager.md      # 产品经理Agent提示词
+│   ├── designer.md             # 设计师Agent提示词
+│   └── frontend.md             # 前端Agent提示词
+│   └── backend.md              # 后端Agent提示词
+│   └── testing.md              # 测试工程师Agent提示词
+├── PRODUCT_S.md                # (运行时生成-)
+├── DESIGNER_S.md               # (运行时生成-)
+└── FRONTEND_S.md               # (运行时生成-)
+└── BACKEND_S.md                # (运行时生成-)
+└── TESTING_S.md                # (运行时生成-)
