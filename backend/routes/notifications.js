@@ -15,46 +15,105 @@ const router = express.Router();
 // 获取通知列表
 router.get('/', 
   catchAsync(async (req, res) => {
-    let dataSQL;
-    let queryParams = [];
+    const { 
+      page = 1, 
+      pageSize = 10, 
+      limit, 
+      sort = 'created_at', 
+      order = 'desc' 
+    } = req.query;
     
-    // 管理员和秘书可以看到所有状态的通知，其他用户只能看已发布的
-    if (req.user.role === 'admin' || req.user.role === 'secretary') {
-      dataSQL = `
-        SELECT 
-          n.id, n.title, n.content, n.type, n.status, 
-          n.created_at, n.updated_at,
-          u.name as author_name
-        FROM notifications n
-        LEFT JOIN users u ON n.author_id = u.id
-        ORDER BY n.created_at DESC
-        LIMIT 10
-      `;
-    } else {
-      dataSQL = `
-        SELECT 
-          n.id, n.title, n.content, n.type, n.status, 
-          n.created_at, n.updated_at,
-          u.name as author_name
-        FROM notifications n
-        LEFT JOIN users u ON n.author_id = u.id
-        WHERE n.status = 'published'
-        ORDER BY n.created_at DESC
-        LIMIT 10
-      `;
+    // 如果有limit参数，使用limit模式（简单查询）
+    if (limit) {
+      const limitValue = parseInt(limit) || 5;
+      
+      // 验证sort和order参数
+      const validSorts = ['created_at', 'updated_at', 'title'];
+      const validOrders = ['ASC', 'DESC'];
+      const validSort = validSorts.includes(sort) ? sort : 'created_at';
+      const validOrder = validOrders.includes(order.toUpperCase()) ? order.toUpperCase() : 'DESC';
+      
+      let dataSQL;
+      
+      if (req.user.role === 'admin' || req.user.role === 'secretary') {
+        dataSQL = `
+          SELECT 
+            n.id, n.title, n.content, n.type, n.status, 
+            n.created_at, n.updated_at,
+            u.name as author_name
+          FROM notifications n
+          LEFT JOIN users u ON n.author_id = u.id
+          ORDER BY n.\`${validSort}\` ${validOrder}
+          LIMIT ?
+        `;
+      } else {
+        dataSQL = `
+          SELECT 
+            n.id, n.title, n.content, n.type, n.status, 
+            n.created_at, n.updated_at,
+            u.name as author_name
+          FROM notifications n
+          LEFT JOIN users u ON n.author_id = u.id
+          WHERE n.status = 'published'
+          ORDER BY n.\`${validSort}\` ${validOrder}
+          LIMIT ?
+        `;
+      }
+      
+      const notifications = await executeQuery(dataSQL, [String(limitValue)]);
+      
+      return res.json({
+        success: true,
+        data: notifications
+      });
     }
     
-    const notifications = await executeQuery(dataSQL, queryParams);
+    // 分页模式
+    const offset = (page - 1) * pageSize;
+    
+    // 验证sort和order参数
+    const validSorts = ['created_at', 'updated_at', 'title'];
+    const validOrders = ['ASC', 'DESC'];
+    const validSort = validSorts.includes(sort) ? sort : 'created_at';
+    const validOrder = validOrders.includes(order.toUpperCase()) ? order.toUpperCase() : 'DESC';
+    
+    let whereClause = '';
+    let queryParams = [];
+    
+    if (req.user.role !== 'admin' && req.user.role !== 'secretary') {
+      whereClause = 'WHERE n.status = ?';
+      queryParams.push('published');
+    }
+    
+    // 查询总数
+    const countSQL = `SELECT COUNT(*) as total FROM notifications n ${whereClause}`;
+    const [countResult] = await executeQuery(countSQL, queryParams);
+    
+    // 查询数据
+    const dataSQL = `
+      SELECT 
+        n.id, n.title, n.content, n.type, n.status, 
+        n.created_at, n.updated_at,
+        u.name as author_name
+      FROM notifications n
+      LEFT JOIN users u ON n.author_id = u.id
+      ${whereClause}
+      ORDER BY n.\`${validSort}\` ${validOrder}
+      LIMIT ? OFFSET ?
+    `;
+    
+    const dataParams = [...queryParams, String(parseInt(pageSize)), String(offset)];
+    const notifications = await executeQuery(dataSQL, dataParams);
     
     res.json({
       success: true,
       data: {
         notifications,
         pagination: {
-          page: 1,
-          pageSize: 10,
-          total: notifications.length,
-          totalPages: 1
+          page: parseInt(page),
+          pageSize: parseInt(pageSize),
+          total: countResult.total,
+          totalPages: Math.ceil(countResult.total / pageSize)
         }
       }
     });

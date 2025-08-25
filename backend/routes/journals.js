@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const { executeQuery, cache } = require('../config/database');
+const { executeQuery, executeTransaction, cache } = require('../config/database');
 const { catchAsync, AppError } = require('../middleware/errorHandler');
 const { performanceLogger } = require('../middleware/logger');
 
@@ -45,16 +45,16 @@ router.get('/search', catchAsync(async (req, res) => {
   const cacheKey = `journal_search_${keyword}_${year}_${page}_${pageSize}`;
   
   try {
-    // 尝试从缓存获取
-    let cachedResult = await cache.get(cacheKey);
-    if (cachedResult) {
-      performanceLogger('JOURNAL_SEARCH_CACHE_HIT', Date.now() - startTime, { keyword, year });
-      return res.json({
-        success: true,
-        data: cachedResult,
-        cached: true
-      });
-    }
+    // 暂时禁用缓存查询，避免数据库问题
+    // let cachedResult = await cache.get(cacheKey);
+    // if (cachedResult) {
+    //   performanceLogger('JOURNAL_SEARCH_CACHE_HIT', Date.now() - startTime, { keyword, year });
+    //   return res.json({
+    //     success: true,
+    //     data: cachedResult,
+    //     cached: true
+    //   });
+    // }
     
     // 调用中科院API
     const response = await journalApi.get('/api/v2/user/search', {
@@ -87,10 +87,10 @@ router.get('/search', catchAsync(async (req, res) => {
         partitionLevel: getPartitionLevel(journal.partition_2023 || journal['2023'])
       }));
       
-      // 保存到本地数据库（异步）
-      saveJournalsToDatabase(processedJournals).catch(error => {
-        console.error('保存期刊数据失败:', error);
-      });
+      // 暂时跳过数据库保存，避免参数问题
+      // saveJournalsToDatabase(processedJournals).catch(error => {
+      //   console.error('保存期刊数据失败:', error);
+      // });
       
       const result = {
         journals: processedJournals,
@@ -102,8 +102,8 @@ router.get('/search', catchAsync(async (req, res) => {
         }
       };
       
-      // 缓存结果（缓存1小时）
-      await cache.set(cacheKey, result, 3600);
+      // 暂时禁用缓存保存
+      // await cache.set(cacheKey, result, 3600);
       
       performanceLogger('JOURNAL_SEARCH_API_SUCCESS', Date.now() - startTime, { 
         keyword, 
@@ -368,16 +368,16 @@ async function saveJournalsToDatabase(journals) {
         updated_at = NOW()
     `,
     params: [
-      journal.id,
-      journal.name,
-      journal.issn || null,
-      journal.eissn || null,
-      journal.publisher || null,
-      journal.subjectCategories || null,
-      journal.partition2023 || null,
-      journal.partition2022 || null,
-      journal.partition2021 || null,
-      journal.impactFactor || null
+      String(journal.id || ''),
+      String(journal.name || ''),
+      journal.issn ? String(journal.issn) : null,
+      journal.eissn ? String(journal.eissn) : null,
+      journal.publisher ? String(journal.publisher) : null,
+      journal.subjectCategories ? String(journal.subjectCategories) : null,
+      journal.partition2023 ? String(journal.partition2023) : null,
+      journal.partition2022 ? String(journal.partition2022) : null,
+      journal.partition2021 ? String(journal.partition2021) : null,
+      journal.impactFactor ? String(journal.impactFactor) : null
     ]
   }));
   

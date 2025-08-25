@@ -19,7 +19,7 @@ const validator = require('./middleware/validator');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const paperRoutes = require('./routes/papers');
-const journalRoutes = require('./routes/journals');
+const journalRoutes = require('./routes/journals_simple');
 const notificationRoutes = require('./routes/notifications');
 const statisticsRoutes = require('./routes/statistics');
 const systemRoutes = require('./routes/system');
@@ -63,8 +63,11 @@ app.use(cors({
     const allowedOrigins = [
       'http://localhost:5173',
       'http://localhost:3000',
+      'http://localhost:8080',
       'http://127.0.0.1:5173',
-      'http://127.0.0.1:3000'
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:8080',
+      'http://192.168.45.47:8080'
     ];
     
     // 开发环境允许所有源
@@ -195,12 +198,13 @@ async function startServer() {
     }
     
     // 启动HTTP服务器
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`
 ========================================
 🚀 科研论文数据管理平台后端服务启动成功！
 ========================================
-📡 服务地址: http://localhost:${PORT}
+📡 本地访问: http://localhost:${PORT}
+🌐 局域网访问: http://192.168.45.47:${PORT}
 🗄️  数据库: MySQL (${process.env.DB_HOST}:${process.env.DB_PORT})
 🔧 环境: ${process.env.NODE_ENV || 'development'}
 📝 API文档: http://localhost:${PORT}/api-docs

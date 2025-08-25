@@ -335,8 +335,8 @@ router.get('/my', catchAsync(async (req, res) => {
     LIMIT ? OFFSET ?
   `;
   
-  queryParams.push(parseInt(pageSize), offset);
-  const papers = await executeQuery(dataSQL, queryParams);
+  const dataParams = [...queryParams, String(parseInt(pageSize)), String(offset)];
+  const papers = await executeQuery(dataSQL, dataParams);
   
   res.json({
     success: true,
@@ -354,7 +354,51 @@ router.get('/my', catchAsync(async (req, res) => {
 
 // 已批准论文接口
 router.get('/approved', catchAsync(async (req, res) => {
-  // 简化版本：直接查询已审核通过论文
+  const { 
+    page = 1, 
+    pageSize = 20, 
+    keyword, 
+    type, 
+    partition, 
+    year 
+  } = req.query;
+  
+  const offset = (page - 1) * pageSize;
+  let whereConditions = ['p.status = ?'];
+  let queryParams = ['approved'];
+  
+  if (keyword) {
+    whereConditions.push(`(
+      p.title LIKE ? OR 
+      p.first_author LIKE ? OR 
+      p.journal_name LIKE ?
+    )`);
+    const keywordPattern = `%${keyword}%`;
+    queryParams.push(keywordPattern, keywordPattern, keywordPattern);
+  }
+  
+  if (type) {
+    whereConditions.push('p.type = ?');
+    queryParams.push(type);
+  }
+  
+  if (partition) {
+    whereConditions.push('p.partition_info LIKE ?');
+    queryParams.push(`%${partition}%`);
+  }
+  
+  if (year) {
+    whereConditions.push('p.publish_year = ?');
+    queryParams.push(year);
+  }
+  
+  const whereClause = `WHERE ${whereConditions.join(' AND ')}`;
+  
+  // 查询总数
+  const countSQL = `SELECT COUNT(*) as total FROM papers p ${whereClause}`;
+  const [countResult] = await executeQuery(countSQL, queryParams);
+  
+  // 查询数据
   const dataSQL = `
     SELECT 
       p.id, p.title, p.first_author, p.journal_name, 
@@ -366,22 +410,23 @@ router.get('/approved', catchAsync(async (req, res) => {
     FROM papers p
     LEFT JOIN users u ON p.user_id = u.id
     LEFT JOIN departments d ON u.department_id = d.id
-    WHERE p.status = 'approved'
+    ${whereClause}
     ORDER BY p.audit_time DESC
-    LIMIT 20
+    LIMIT ? OFFSET ?
   `;
   
-  const papers = await executeQuery(dataSQL, []);
+  const dataParams = [...queryParams, String(parseInt(pageSize)), String(offset)];
+  const papers = await executeQuery(dataSQL, dataParams);
   
   res.json({
     success: true,
     data: {
       papers,
       pagination: {
-        page: 1,
-        pageSize: 20,
-        total: papers.length,
-        pages: 1
+        page: parseInt(page),
+        pageSize: parseInt(pageSize),
+        total: countResult.total,
+        pages: Math.ceil(countResult.total / pageSize)
       }
     }
   });
@@ -389,7 +434,39 @@ router.get('/approved', catchAsync(async (req, res) => {
 
 // 待审核论文接口
 router.get('/pending', catchAsync(async (req, res) => {
-  // 简化版本：直接查询待审核论文
+  const { 
+    page = 1, 
+    pageSize = 20, 
+    type, 
+    keyword 
+  } = req.query;
+  
+  const offset = (page - 1) * pageSize;
+  let whereConditions = ['p.status = ?'];
+  let queryParams = ['pending'];
+  
+  if (keyword) {
+    whereConditions.push(`(
+      p.title LIKE ? OR 
+      p.first_author LIKE ? OR 
+      p.journal_name LIKE ?
+    )`);
+    const keywordPattern = `%${keyword}%`;
+    queryParams.push(keywordPattern, keywordPattern, keywordPattern);
+  }
+  
+  if (type) {
+    whereConditions.push('p.type = ?');
+    queryParams.push(type);
+  }
+  
+  const whereClause = `WHERE ${whereConditions.join(' AND ')}`;
+  
+  // 查询总数
+  const countSQL = `SELECT COUNT(*) as total FROM papers p ${whereClause}`;
+  const [countResult] = await executeQuery(countSQL, queryParams);
+  
+  // 查询数据
   const dataSQL = `
     SELECT 
       p.id, p.title, p.first_author, p.journal_name, 
@@ -400,22 +477,23 @@ router.get('/pending', catchAsync(async (req, res) => {
     FROM papers p
     LEFT JOIN users u ON p.user_id = u.id
     LEFT JOIN departments d ON u.department_id = d.id
-    WHERE p.status = 'pending'
+    ${whereClause}
     ORDER BY p.created_at ASC
-    LIMIT 20
+    LIMIT ? OFFSET ?
   `;
   
-  const papers = await executeQuery(dataSQL, []);
+  const dataParams = [...queryParams, String(parseInt(pageSize)), String(offset)];
+  const papers = await executeQuery(dataSQL, dataParams);
   
   res.json({
     success: true,
     data: {
       papers,
       pagination: {
-        page: 1,
-        pageSize: 20,
-        total: papers.length,
-        pages: 1
+        page: parseInt(page),
+        pageSize: parseInt(pageSize),
+        total: countResult.total,
+        pages: Math.ceil(countResult.total / pageSize)
       }
     }
   });

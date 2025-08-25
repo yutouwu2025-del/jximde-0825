@@ -97,7 +97,7 @@ router.get('/',
     
     const [countResult, users] = await Promise.all([
       executeQuery(countSQL, queryParams),
-      executeQuery(dataSQL, [...queryParams, parseInt(pageSize), offset])
+      executeQuery(dataSQL, [...queryParams, String(parseInt(pageSize)), String(offset)])
     ]);
     
     const total = countResult[0].total;

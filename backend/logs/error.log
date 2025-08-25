@@ -682,3 +682,201 @@
   level: 'error',
   message: 'HTTP Request'
 }
+{"ip":"::1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\notifications.js:56:35\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)","timestamp":"2025-08-25T06:29:49.288Z","url":"/api/notifications?limit=5&sort=created_at&order=desc","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0"}
+{
+  method: 'GET',
+  url: '/api/notifications?limit=5&sort=created_at&order=desc',
+  ip: '::1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 14:29:49',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '28ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"::1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\notifications.js:56:35\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)","timestamp":"2025-08-25T06:29:54.764Z","url":"/api/notifications?limit=5&sort=created_at&order=desc","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0"}
+{
+  method: 'GET',
+  url: '/api/notifications?limit=5&sort=created_at&order=desc',
+  ip: '::1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 14:29:54',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '7ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"::1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\notifications.js:56:35\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)","timestamp":"2025-08-25T06:30:02.422Z","url":"/api/notifications?limit=5&sort=created_at&order=desc","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0"}
+{
+  method: 'GET',
+  url: '/api/notifications?limit=5&sort=created_at&order=desc',
+  ip: '::1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 14:30:02',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '4ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"::1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\papers.js:492:24\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-25T06:30:25.658Z","url":"/api/papers/pending?page=1&pageSize=20&type=&priority=&keyword=","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0"}
+{
+  method: 'GET',
+  url: '/api/papers/pending?page=1&pageSize=20&type=&priority=&keyword=',
+  ip: '::1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 14:30:25',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '10ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"::1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\papers.js:492:24\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-25T06:31:03.758Z","url":"/api/papers/pending?page=1&pageSize=20&type=&priority=&keyword=","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0"}
+{
+  method: 'GET',
+  url: '/api/papers/pending?page=1&pageSize=20&type=&priority=&keyword=',
+  ip: '::1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 14:31:03',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '5ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"::1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\papers.js:486:24\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-25T06:33:26.332Z","url":"/api/papers/pending?page=1&pageSize=5","user":1,"userAgent":"curl/8.7.1"}
+{
+  method: 'GET',
+  url: '/api/papers/pending?page=1&pageSize=5',
+  ip: '::1',
+  userAgent: 'curl/8.7.1',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 14:33:26',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '6ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"::1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\notifications.js:63:35\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)","timestamp":"2025-08-25T06:48:11.605Z","url":"/api/notifications?limit=5","user":1,"userAgent":"curl/8.7.1"}
+{
+  method: 'GET',
+  url: '/api/notifications?limit=5',
+  ip: '::1',
+  userAgent: 'curl/8.7.1',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 14:48:11',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '6ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"127.0.0.1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at searchLocalJournals (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\journals.js:311:5)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\journals.js:127:32\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-25T07:17:03.372Z","url":"/api/journals/search?keyword=nature&year=2023","user":1,"userAgent":"curl/8.7.1"}
+{
+  method: 'GET',
+  url: '/api/journals/search?keyword=nature&year=2023',
+  ip: '127.0.0.1',
+  userAgent: 'curl/8.7.1',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 15:17:03',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '389ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"127.0.0.1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at searchLocalJournals (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\journals.js:311:5)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\journals.js:127:32\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-25T07:18:46.795Z","url":"/api/journals/search?keyword=nature&year=2023","user":1,"userAgent":"curl/8.7.1"}
+{
+  method: 'GET',
+  url: '/api/journals/search?keyword=nature&year=2023',
+  ip: '127.0.0.1',
+  userAgent: 'curl/8.7.1',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 15:18:46',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '417ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"127.0.0.1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at searchLocalJournals (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\journals.js:311:5)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\journals.js:127:32\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-25T07:19:18.398Z","url":"/api/journals/search?keyword=nature&year=2023&pageSize=2","user":1,"userAgent":"curl/8.7.1"}
+{
+  method: 'GET',
+  url: '/api/journals/search?keyword=nature&year=2023&pageSize=2',
+  ip: '127.0.0.1',
+  userAgent: 'curl/8.7.1',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 15:19:18',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '389ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"127.0.0.1","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at searchLocalJournals (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\journals.js:311:5)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\journals.js:127:32\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-25T07:20:03.835Z","url":"/api/journals/search?keyword=nature&year=2023&pageSize=2","user":1,"userAgent":"curl/8.7.1"}
+{
+  method: 'GET',
+  url: '/api/journals/search?keyword=nature&year=2023&pageSize=2',
+  ip: '127.0.0.1',
+  userAgent: 'curl/8.7.1',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-25 15:20:03',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '272ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}

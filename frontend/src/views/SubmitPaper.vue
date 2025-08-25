@@ -82,27 +82,36 @@
           </div>
           
           <el-form-item label="期刊搜索" prop="journal">
-            <el-autocomplete
-              v-model="journalSearchKeyword"
-              :fetch-suggestions="searchJournals"
-              placeholder="请输入期刊名称或ISSN号进行搜索"
-              clearable
-              style="width: 100%"
-              @select="selectJournal"
-              :loading="journalSearchLoading"
-            >
-              <template #default="{ item }">
-                <div class="journal-suggestion">
-                  <div class="journal-name">{{ item.name }}</div>
-                  <div class="journal-info">
-                    <el-tag size="small" type="info">{{ item.issn }}</el-tag>
-                    <el-tag size="small" :type="getPartitionType(item.partition)">
-                      {{ item.partition }}分区
-                    </el-tag>
+            <div class="journal-search-wrapper">
+              <el-autocomplete
+                v-model="journalSearchKeyword"
+                :fetch-suggestions="searchJournals"
+                placeholder="请输入期刊名称或ISSN号进行搜索"
+                clearable
+                style="flex: 1; margin-right: 12px"
+                @select="selectJournal"
+                :loading="journalSearchLoading"
+              >
+                <template #default="{ item }">
+                  <div class="journal-suggestion">
+                    <div class="journal-name">{{ item.name }}</div>
+                    <div class="journal-info">
+                      <el-tag size="small" type="info">{{ item.issn }}</el-tag>
+                      <el-tag size="small" :type="getPartitionType(item.partitionLevel)">
+                        {{ item.partitionInfo }}
+                      </el-tag>
+                    </div>
                   </div>
-                </div>
-              </template>
-            </el-autocomplete>
+                </template>
+              </el-autocomplete>
+              <el-button 
+                type="primary" 
+                @click="showJournalSelector = true"
+                :icon="Search"
+              >
+                选择期刊
+              </el-button>
+            </div>
           </el-form-item>
           
           <el-form-item label="期刊名称" prop="journalName">
@@ -199,9 +208,8 @@
               :multiple="false"
               :accept="'.pdf,.docx'"
               :before-upload="beforeUpload"
-              :on-progress="handleUploadProgress"
-              :on-success="handleUploadSuccess"
-              :on-error="handleUploadError"
+              :on-change="handleFileChange"
+              :on-remove="handleFileRemove"
               :auto-upload="false"
               v-model:file-list="fileList"
             >
@@ -217,26 +225,13 @@
             </el-upload>
           </el-form-item>
           
-          <!-- 上传进度 -->
-          <div v-if="uploadProgress > 0 && uploadProgress < 100" class="upload-progress">
-            <el-progress :percentage="uploadProgress" :status="uploadStatus" />
-            <p>正在上传文件，请稍候...</p>
-          </div>
-          
-          <!-- 已上传文件 -->
-          <div v-if="paperForm.paperFile" class="uploaded-file">
+          <!-- 已选择文件显示 -->
+          <div v-if="selectedFile" class="selected-file">
             <div class="file-info">
               <el-icon><Document /></el-icon>
-              <span>{{ paperForm.paperFile.name }}</span>
-              <el-tag type="success" size="small">已上传</el-tag>
-              <el-button
-                text
-                type="danger"
-                size="small"
-                @click="removeFile"
-              >
-                删除
-              </el-button>
+              <span>{{ selectedFile.name }}</span>
+              <el-tag type="info" size="small">已选择</el-tag>
+              <span class="file-size">{{ formatFileSize(selectedFile.size) }}</span>
             </div>
           </div>
         </div>
@@ -248,8 +243,14 @@
             提交审核
           </div>
           
+          <!-- 上传进度 -->
+          <div v-if="uploadProgress > 0 && uploadProgress < 100" class="upload-progress">
+            <el-progress :percentage="uploadProgress" :status="uploadStatus" />
+            <p>正在上传文件，请稍候...</p>
+          </div>
+          
           <!-- 信息预览 -->
-          <div class="paper-preview">
+          <div v-else class="paper-preview">
             <h3>论文信息预览</h3>
             <el-descriptions :column="2" border>
               <el-descriptions-item label="论文标题">{{ paperForm.title }}</el-descriptions-item>
@@ -262,7 +263,7 @@
               <el-descriptions-item label="语种">{{ getLanguageText(paperForm.language) }}</el-descriptions-item>
               <el-descriptions-item label="DOI">{{ paperForm.doi || '未填写' }}</el-descriptions-item>
               <el-descriptions-item label="论文文件">
-                {{ paperForm.paperFile ? paperForm.paperFile.name : '未上传' }}
+                {{ selectedFile ? selectedFile.name : '未选择' }}
               </el-descriptions-item>
             </el-descriptions>
           </div>
@@ -307,6 +308,12 @@
         </div>
       </el-form>
     </div>
+    
+    <!-- 期刊选择弹窗 -->
+    <JournalSelector
+      v-model="showJournalSelector"
+      @confirm="handleJournalSelected"
+    />
   </div>
 </template>
 
@@ -314,8 +321,10 @@
 import { ref, reactive, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { papersApi } from '../api/papers'
-import { journalsApi } from '../api/journals'
+import { Search } from '@element-plus/icons-vue'
+import { papersApi } from '@/api/papers'
+import { journalsApi } from '@/api/journals'
+import JournalSelector from '@/components/JournalSelector.vue'
 
 const router = useRouter()
 
@@ -325,7 +334,9 @@ const uploadRef = ref(null)
 const currentStep = ref(0)
 const journalSearchKeyword = ref('')
 const journalSearchLoading = ref(false)
+const showJournalSelector = ref(false)
 const fileList = ref([])
+const selectedFile = ref(null)
 const uploadProgress = ref(0)
 const uploadStatus = ref('success')
 const savingDraft = ref(false)
@@ -436,7 +447,21 @@ const searchJournals = async (queryString, callback) => {
 const selectJournal = (journal) => {
   paperForm.journalName = journal.name
   paperForm.issn = journal.issn
-  paperForm.partition = journal.partition
+  paperForm.partition = journal.partitionInfo || journal.partition
+  paperForm.journalId = journal.id
+}
+
+// 处理期刊选择器确认
+const handleJournalSelected = (journal) => {
+  paperForm.journalName = journal.name
+  paperForm.issn = journal.issn
+  paperForm.partition = journal.partitionInfo
+  paperForm.journalId = journal.id
+  
+  // 更新自动完成输入框显示
+  journalSearchKeyword.value = journal.name
+  
+  ElMessage.success('期刊选择成功')
 }
 
 // 获取分区类型
@@ -491,30 +516,27 @@ const handleUploadProgress = (evt) => {
   uploadProgress.value = Math.round((evt.loaded * 100) / evt.total)
 }
 
-// 文件上传成功
-const handleUploadSuccess = (response, file) => {
-  uploadProgress.value = 100
-  uploadStatus.value = 'success'
-  paperForm.paperFile = {
-    name: file.name,
-    url: response.url,
-    id: response.id
+// 文件选择变化
+const handleFileChange = (uploadFile, uploadFiles) => {
+  if (uploadFile.status === 'ready') {
+    selectedFile.value = uploadFile.raw
+    console.log('文件已选择:', selectedFile.value.name)
   }
-  ElMessage.success('文件上传成功')
 }
 
-// 文件上传失败
-const handleUploadError = (error) => {
-  uploadProgress.value = 0
-  uploadStatus.value = 'exception'
-  ElMessage.error('文件上传失败，请重试')
+// 文件移除
+const handleFileRemove = (uploadFile, uploadFiles) => {
+  selectedFile.value = null
+  console.log('文件已移除')
 }
 
-// 删除文件
-const removeFile = () => {
-  paperForm.paperFile = null
-  fileList.value = []
-  uploadProgress.value = 0
+// 格式化文件大小
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes'
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
 // 下一步
@@ -527,9 +549,9 @@ const nextStep = async () => {
   try {
     await paperFormRef.value.validateField(fieldsToValidate)
     
-    // 特殊验证
-    if (currentStep.value === 3 && !paperForm.paperFile) {
-      ElMessage.error('请上传论文文件')
+    // 特殊验证 - 文件上传步骤
+    if (currentStep.value === 3 && !selectedFile.value) {
+      ElMessage.error('请选择论文文件')
       return
     }
     
@@ -563,15 +585,41 @@ const saveDraft = async () => {
   savingDraft.value = true
   
   try {
-    const formData = {
-      ...paperForm,
+    // 1. 先创建论文草稿记录
+    const paperData = {
+      title: paperForm.title,
+      type: paperForm.type,
+      publish_year: paperForm.publishYear,
+      language: paperForm.language,
+      doi: paperForm.doi,
+      journal_name: paperForm.journalName,
+      journal_id: paperForm.journalId,
+      partition_info: paperForm.partition,
+      institution_order: paperForm.institutionOrder,
+      first_author: paperForm.firstAuthor,
+      corresponding_author: paperForm.correspondingAuthor,
+      authors: paperForm.allAuthors,
+      author_institutions: paperForm.authorInstitutions,
       status: 'draft'
     }
     
-    await papersApi.submitPaper(formData)
+    const createResponse = await papersApi.submitPaper(paperData)
+    const paperId = createResponse.data.id
+    
+    // 2. 如果有文件，上传文件
+    if (selectedFile.value) {
+      try {
+        await papersApi.uploadPaperFile(paperId, selectedFile.value)
+      } catch (uploadError) {
+        console.error('文件上传失败:', uploadError)
+        ElMessage.warning('草稿已保存，但文件上传失败，请稍后重新上传')
+      }
+    }
+    
     ElMessage.success('草稿保存成功')
     router.push('/my-papers')
   } catch (error) {
+    console.error('保存草稿失败:', error)
     ElMessage.error('保存草稿失败')
   } finally {
     savingDraft.value = false
@@ -593,20 +641,49 @@ const submitPaper = async () => {
     
     submitting.value = true
     
-    const formData = {
-      ...paperForm,
+    // 1. 先创建论文记录
+    const paperData = {
+      title: paperForm.title,
+      type: paperForm.type,
+      publish_year: paperForm.publishYear,
+      language: paperForm.language,
+      doi: paperForm.doi,
+      journal_name: paperForm.journalName,
+      journal_id: paperForm.journalId,
+      partition_info: paperForm.partition,
+      institution_order: paperForm.institutionOrder,
+      first_author: paperForm.firstAuthor,
+      corresponding_author: paperForm.correspondingAuthor,
+      authors: paperForm.allAuthors,
+      author_institutions: paperForm.authorInstitutions,
       status: 'pending'
     }
     
-    await papersApi.submitPaper(formData)
+    const createResponse = await papersApi.submitPaper(paperData)
+    const paperId = createResponse.data.id
+    
+    // 2. 如果有文件，上传文件
+    if (selectedFile.value) {
+      try {
+        await papersApi.uploadPaperFile(paperId, selectedFile.value, (progressEvent) => {
+          uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        })
+      } catch (uploadError) {
+        console.error('文件上传失败:', uploadError)
+        ElMessage.warning('论文已创建，但文件上传失败，请稍后在"我的论文"中重新上传')
+      }
+    }
+    
     ElMessage.success('论文提交成功，请等待审核')
     router.push('/my-papers')
   } catch (error) {
     if (error !== 'cancel') {
+      console.error('提交失败:', error)
       ElMessage.error('提交失败，请稍后重试')
     }
   } finally {
     submitting.value = false
+    uploadProgress.value = 0
   }
 }
 </script>
@@ -699,6 +776,14 @@ const submitPaper = async () => {
   text-align: center;
 }
 
+.selected-file {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
 .uploaded-file {
   margin-top: 16px;
   padding: 16px;
@@ -711,6 +796,12 @@ const submitPaper = async () => {
   align-items: center;
   gap: 12px;
   font-size: 14px;
+}
+
+.file-size {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-left: auto;
 }
 
 .file-info span {
@@ -771,5 +862,11 @@ const submitPaper = async () => {
     flex-direction: column;
     width: 100%;
   }
+}
+
+.journal-search-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 </style>

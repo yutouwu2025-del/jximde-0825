@@ -4,30 +4,28 @@ import api from './index.js'
 export const journalsApi = {
   // 搜索期刊
   searchJournals(params) {
-    const { year = '2023', keyword, user = 'imdeJCRfq', password = 'imde2012' } = params
+    const { year = '2023', keyword, page = 1, pageSize = 20 } = params
     
-    // 直接调用中科院期刊分区表API
-    return api.get('https://webapi.fenqubiao.com/api/v2/user/search', {
+    // 通过后端代理调用中科院期刊分区表API
+    return api.get('/journals/search', {
       params: {
         year,
         keyword,
-        user,
-        password
+        page,
+        pageSize
       }
     })
   },
 
   // 获取期刊分区信息
   getJournalInfo(params) {
-    const { year = '2023', keyword, user = 'imdeJCRfq', password = 'imde2012' } = params
+    const { year = '2023', keyword } = params
     
-    // 直接调用中科院期刊分区表API
-    return api.get('https://webapi.fenqubiao.com/api/v2/user/get', {
+    // 通过后端代理调用中科院期刊分区表API
+    return api.get('/journals/info', {
       params: {
         year,
-        keyword,
-        user,
-        password
+        keyword
       }
     })
   },

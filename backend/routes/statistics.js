@@ -109,13 +109,13 @@ router.get('/overview',
             WHEN p.partition_info LIKE '%Q3%' THEN 'Q3'
             WHEN p.partition_info LIKE '%Q4%' THEN 'Q4'
             ELSE '未分区'
-          END as partition,
+          END as \`partition\`,
           COUNT(*) as count
         FROM papers p
         LEFT JOIN users u ON p.user_id = u.id
         ${whereClause} AND p.status = 'approved'
-        GROUP BY partition
-        ORDER BY partition
+        GROUP BY \`partition\`
+        ORDER BY \`partition\`
       `, queryParams),
       
       // 高产用户排行

@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus'
 // 创建axios实例
 const api = axios.create({
   baseURL: '/api',
-  timeout: 10000,
+  timeout: 30000, // 增加到30秒，适应期刊搜索需要的时间
   headers: {
     'Content-Type': 'application/json'
   }

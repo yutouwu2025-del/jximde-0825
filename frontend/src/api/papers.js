@@ -33,11 +33,11 @@ export const papersApi = {
   },
 
   // 上传论文文件
-  uploadPaperFile(file, onProgress) {
+  uploadPaperFile(paperId, file, onProgress) {
     const formData = new FormData()
     formData.append('file', file)
     
-    return api.post('/papers/upload', formData, {
+    return api.post(`/papers/${paperId}/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       },
