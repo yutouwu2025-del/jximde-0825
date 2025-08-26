@@ -132,6 +132,7 @@
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { papersApi } from '../api/papers'
+import api from '../api/index'
 import dayjs from 'dayjs'
 
 const importing = ref(false)
@@ -188,11 +189,41 @@ const importData = async () => {
   importing.value = true
   try {
     const file = importFileList.value[0].raw
-    await papersApi.importPapers(file)
-    ElMessage.success('数据导入成功')
+    const formData = new FormData()
+    formData.append('file', file)
+    
+    const response = await api.post('/upload/import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    
+    const result = response.data
+    ElMessage.success(`数据导入成功：导入了 ${result.data?.successCount || 0} 条记录`)
+    
+    // 记录操作历史
+    operationHistory.value.unshift({
+      type: 'import',
+      description: `导入论文数据：${file.name}`,
+      count: result.data?.successCount || 0,
+      status: 'success',
+      created_at: new Date().toLocaleString()
+    })
+    
     importFileList.value = []
   } catch (error) {
-    ElMessage.error('数据导入失败')
+    console.error('数据导入失败:', error)
+    
+    // 记录失败历史
+    operationHistory.value.unshift({
+      type: 'import',
+      description: `导入论文数据失败：${importFileList.value[0]?.name}`,
+      count: 0,
+      status: 'failed',
+      created_at: new Date().toLocaleString()
+    })
+    
+    ElMessage.error('数据导入失败: ' + (error.response?.data?.message || error.message))
   } finally {
     importing.value = false
   }
@@ -202,26 +233,63 @@ const exportData = async () => {
   exporting.value = true
   try {
     const params = {
+      format: 'csv',
       scope: exportForm.scope,
-      types: exportForm.types,
+      types: exportForm.types.join(','),
       startYear: exportForm.yearRange?.[0],
       endYear: exportForm.yearRange?.[1],
-      fields: exportForm.fields
+      fields: exportForm.fields.join(',')
     }
     
-    const response = await papersApi.exportPapers(params)
+    // 使用统计API导出数据
+    const response = await api.get('/statistics/export', {
+      params: {
+        format: 'csv',
+        type: exportForm.scope === 'my' ? 'personal' : 'overview',
+        ...params
+      },
+      responseType: 'blob'
+    })
     
     // 创建下载链接
     const url = window.URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')
     link.href = url
-    link.download = `论文数据_${dayjs().format('YYYY-MM-DD')}.xlsx`
+    
+    // 生成文件名
+    const scopeText = exportForm.scope === 'all' ? '全部' : 
+                     exportForm.scope === 'my' ? '我的' : '已审核'
+    const fileName = `论文数据_${scopeText}_${dayjs().format('YYYY-MM-DD')}.csv`
+    link.download = fileName
+    
+    document.body.appendChild(link)
     link.click()
+    document.body.removeChild(link)
     window.URL.revokeObjectURL(url)
+    
+    // 记录操作历史
+    operationHistory.value.unshift({
+      type: 'export',
+      description: `导出${scopeText}论文数据`,
+      count: 'N/A', // 导出时无法知道具体数量
+      status: 'success',
+      created_at: new Date().toLocaleString()
+    })
     
     ElMessage.success('数据导出成功')
   } catch (error) {
-    ElMessage.error('数据导出失败')
+    console.error('数据导出失败:', error)
+    
+    // 记录失败历史
+    operationHistory.value.unshift({
+      type: 'export',
+      description: '导出论文数据失败',
+      count: 0,
+      status: 'failed',
+      created_at: new Date().toLocaleString()
+    })
+    
+    ElMessage.error('数据导出失败: ' + (error.response?.data?.message || error.message))
   } finally {
     exporting.value = false
   }

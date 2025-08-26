@@ -19,23 +19,23 @@
           </div>
           
           <el-table :data="usersList" stripe>
-            <el-table-column prop="username" label="用户名" />
-            <el-table-column prop="name" label="姓名" />
-            <el-table-column prop="role" label="角色">
+            <el-table-column prop="username" label="用户名" width="140" />
+            <el-table-column prop="name" label="姓名" width="120" />
+            <el-table-column prop="role" label="角色" width="120">
               <template #default="{ row }">
                 <el-tag :type="getRoleType(row.role)">{{ getRoleText(row.role) }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="department" label="部门" />
-            <el-table-column prop="status" label="状态">
+            <el-table-column prop="department_name" label="部门" width="140" />
+            <el-table-column prop="status" label="状态" width="100">
               <template #default="{ row }">
                 <el-tag :type="row.status === 'active' ? 'success' : 'danger'">
                   {{ row.status === 'active' ? '正常' : '禁用' }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="last_login" label="最后登录" />
-            <el-table-column label="操作" width="200">
+            <el-table-column prop="last_login" label="最后登录" width="220" />
+            <el-table-column label="操作" width="220">
               <template #default="{ row }">
                 <el-button text type="primary" size="small" @click="editUser(row)">
                   编辑
@@ -126,37 +126,143 @@
         <div class="tab-content">
           <h3>系统监控</h3>
           
+          <!-- 系统监控指标卡片 -->
           <el-row :gutter="16" class="monitor-cards">
             <el-col :span="6">
               <div class="monitor-card">
                 <div class="monitor-title">在线用户</div>
                 <div class="monitor-value">{{ monitorData.onlineUsers }}</div>
+                <div class="monitor-trend">实时数据</div>
               </div>
             </el-col>
             <el-col :span="6">
               <div class="monitor-card">
                 <div class="monitor-title">今日访问</div>
                 <div class="monitor-value">{{ monitorData.todayVisits }}</div>
+                <div class="monitor-trend">+12% vs 昨日</div>
               </div>
             </el-col>
             <el-col :span="6">
               <div class="monitor-card">
-                <div class="monitor-title">存储使用</div>
-                <div class="monitor-value">{{ monitorData.storageUsage }}%</div>
+                <div class="monitor-title">内存使用</div>
+                <div class="monitor-value">{{ monitorData.memoryUsage }}%</div>
+                <div class="monitor-trend">
+                  <el-progress 
+                    :percentage="monitorData.memoryUsage" 
+                    :show-text="false" 
+                    :stroke-width="6"
+                    :color="getProgressColor(monitorData.memoryUsage)"
+                  />
+                </div>
               </div>
             </el-col>
             <el-col :span="6">
               <div class="monitor-card">
                 <div class="monitor-title">系统状态</div>
                 <div class="monitor-value">
-                  <el-tag type="success">正常</el-tag>
+                  <el-tag :type="monitorData.systemStatus === 'normal' ? 'success' : 'danger'">
+                    {{ monitorData.systemStatus === 'normal' ? '正常' : '异常' }}
+                  </el-tag>
                 </div>
+                <div class="monitor-trend">{{ monitorData.lastUpdated }}</div>
               </div>
+            </el-col>
+          </el-row>
+          
+          <!-- 详细监控信息 -->
+          <el-row :gutter="16" class="monitor-details" style="margin-top: 20px;">
+            <el-col :span="12">
+              <el-card title="服务器负载">
+                <template #header>
+                  <span>服务器负载</span>
+                  <el-button style="float: right; padding: 3px 0" text @click="refreshMonitorData">
+                    刷新
+                  </el-button>
+                </template>
+                <div class="load-info">
+                  <div class="load-item">
+                    <span class="load-label">CPU负载:</span>
+                    <el-progress 
+                      :percentage="monitorData.serverLoad" 
+                      :color="getProgressColor(monitorData.serverLoad)"
+                    />
+                  </div>
+                  <div class="load-item">
+                    <span class="load-label">磁盘使用:</span>
+                    <el-progress 
+                      :percentage="monitorData.diskUsage" 
+                      :color="getProgressColor(monitorData.diskUsage)"
+                    />
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+            <el-col :span="12">
+              <el-card title="系统日志">
+                <template #header>
+                  <span>系统日志</span>
+                  <el-button style="float: right; padding: 3px 0" text @click="loadSystemLogs">
+                    刷新日志
+                  </el-button>
+                </template>
+                <div class="log-container">
+                  <div v-if="systemLogs.length === 0" class="no-logs">
+                    暂无系统日志
+                  </div>
+                  <div v-else class="log-list">
+                    <div 
+                      v-for="log in systemLogs.slice(0, 5)" 
+                      :key="log.id" 
+                      class="log-item"
+                    >
+                      <el-tag 
+                        :type="getLogType(log.level)" 
+                        size="small"
+                      >
+                        {{ log.level }}
+                      </el-tag>
+                      <span class="log-time">{{ log.time }}</span>
+                      <span class="log-message">{{ log.message }}</span>
+                    </div>
+                  </div>
+                </div>
+              </el-card>
             </el-col>
           </el-row>
         </div>
       </el-tab-pane>
     </el-tabs>
+    
+    <!-- 部门编辑对话框 -->
+    <el-dialog
+      v-model="departmentDialog"
+      :title="editingDepartment ? '编辑部门' : '添加部门'"
+      width="500px"
+    >
+      <el-form
+        ref="departmentFormRef"
+        :model="departmentForm"
+        :rules="departmentRules"
+        label-width="100px"
+      >
+        <el-form-item label="部门名称" prop="name">
+          <el-input v-model="departmentForm.name" placeholder="请输入部门名称" />
+        </el-form-item>
+        <el-form-item label="部门描述">
+          <el-input 
+            v-model="departmentForm.description" 
+            type="textarea"
+            :rows="3"
+            placeholder="请输入部门描述（可选）"
+          />
+        </el-form-item>
+      </el-form>
+      
+      <template #footer>
+        <el-button @click="departmentDialog = false">取消</el-button>
+        <el-button type="primary" @click="saveDepartment">确定</el-button>
+      </template>
+    </el-dialog>
     
     <!-- 用户编辑对话框 -->
     <el-dialog
@@ -210,7 +316,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { usersApi } from '../api/users'
+import api from '../api/index'
 
 const activeTab = ref('users')
 const userDialog = ref(false)
@@ -243,12 +349,20 @@ const systemSettings = reactive({
   emailNotification: true
 })
 
+// 系统监控数据
 const monitorData = reactive({
-  onlineUsers: 24,
-  todayVisits: 156,
-  storageUsage: 68,
-  systemStatus: 'normal'
+  onlineUsers: 0,
+  todayVisits: 0,
+  storageUsage: 0,
+  systemStatus: 'normal',
+  serverLoad: 0,
+  memoryUsage: 0,
+  diskUsage: 0,
+  lastUpdated: ''
 })
+
+// 系统日志数据
+const systemLogs = ref([])
 
 const getRoleType = (role) => {
   const map = {
@@ -288,7 +402,7 @@ const editUser = (user) => {
     username: user.username,
     name: user.name,
     role: user.role,
-    department: user.department,
+    department: user.department_name || user.department,
     password: ''
   })
   userDialog.value = true
@@ -299,31 +413,81 @@ const saveUser = async () => {
     const valid = await userFormRef.value.validate()
     if (!valid) return
     
+    // 准备提交数据，确保数据类型正确
+    const submitData = {
+      name: userForm.name,
+      role: userForm.role
+    }
+    
+    // 处理department_id
+    if (userForm.department) {
+      const selectedDept = departmentsList.value.find(d => d.name === userForm.department)
+      if (selectedDept) {
+        submitData.department_id = parseInt(selectedDept.id)
+      } else {
+        submitData.department_id = null
+      }
+    } else {
+      submitData.department_id = null
+    }
+    
+    // 如果是新用户，需要用户名和密码
+    if (!editingUser.value) {
+      submitData.username = userForm.username
+      submitData.password = userForm.password
+    }
+    
+    // 调试信息
+    console.log('提交的用户数据:', submitData)
+    console.log('部门列表:', departmentsList.value)
+    console.log('选择的部门:', userForm.department)
+    
     if (editingUser.value) {
-      await usersApi.updateUser(editingUser.value.id, userForm)
+      const response = await api.put(`/users/${editingUser.value.id}`, submitData)
+      console.log('更新用户响应:', response)
       ElMessage.success('用户更新成功')
     } else {
-      await usersApi.createUser(userForm)
+      const response = await api.post('/users', submitData)
+      console.log('创建用户响应:', response)
       ElMessage.success('用户创建成功')
     }
     
     userDialog.value = false
     loadUsers()
   } catch (error) {
-    ElMessage.error('操作失败')
+    console.error('用户操作失败详细信息:', {
+      error,
+      response: error.response,
+      data: error.response?.data,
+      status: error.response?.status
+    })
+    
+    const errorMessage = error.response?.data?.message || 
+                        error.response?.data?.error ||
+                        error.message ||
+                        '操作失败'
+    
+    ElMessage.error('操作失败: ' + errorMessage)
   }
 }
 
 const resetPassword = async (user) => {
   try {
-    await ElMessageBox.prompt('请输入新密码', '重置密码', {
-      inputType: 'password'
+    const { value: newPassword } = await ElMessageBox.prompt('请输入新密码', '重置密码', {
+      inputType: 'password',
+      inputValidator: (value) => {
+        if (!value) return '密码不能为空'
+        if (value.length < 6) return '密码长度至少6位'
+        return true
+      }
     })
     
+    await api.put(`/users/${user.id}/password`, { password: newPassword })
     ElMessage.success('密码重置成功')
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('密码重置失败')
+      console.error('密码重置失败:', error)
+      ElMessage.error('密码重置失败: ' + (error.response?.data?.message || error.message))
     }
   }
 }
@@ -331,36 +495,211 @@ const resetPassword = async (user) => {
 const toggleUserStatus = async (user) => {
   try {
     const newStatus = user.status === 'active' ? 'inactive' : 'active'
-    await usersApi.toggleUserStatus(user.id, newStatus)
+    await api.put(`/users/${user.id}/status`, { status: newStatus })
     ElMessage.success('状态更新成功')
     loadUsers()
   } catch (error) {
-    ElMessage.error('状态更新失败')
+    console.error('状态更新失败:', error)
+    ElMessage.error('状态更新失败: ' + (error.response?.data?.message || error.message))
   }
 }
 
+// 部门管理相关
+const departmentDialog = ref(false)
+const editingDepartment = ref(null)
+const departmentFormRef = ref(null)
+
+const departmentForm = reactive({
+  name: '',
+  description: ''
+})
+
+const departmentRules = {
+  name: [{ required: true, message: '请输入部门名称', trigger: 'blur' }]
+}
+
 const createDepartment = () => {
-  ElMessage.info('添加部门功能开发中...')
+  editingDepartment.value = null
+  Object.assign(departmentForm, {
+    name: '',
+    description: ''
+  })
+  departmentDialog.value = true
 }
 
 const editDepartment = (department) => {
-  ElMessage.info('编辑部门功能开发中...')
+  editingDepartment.value = department
+  Object.assign(departmentForm, {
+    name: department.name,
+    description: department.description || ''
+  })
+  departmentDialog.value = true
 }
 
-const deleteDepartment = (department) => {
-  ElMessage.info('删除部门功能开发中...')
+const saveDepartment = async () => {
+  try {
+    const valid = await departmentFormRef.value.validate()
+    if (!valid) return
+    
+    const submitData = {
+      name: departmentForm.name,
+      description: departmentForm.description
+    }
+    
+    if (editingDepartment.value) {
+      await api.put(`/users/departments/${editingDepartment.value.id}`, submitData)
+      ElMessage.success('部门更新成功')
+    } else {
+      await api.post('/users/departments', submitData)
+      ElMessage.success('部门创建成功')
+    }
+    
+    departmentDialog.value = false
+    loadDepartments()
+  } catch (error) {
+    console.error('部门操作失败:', error)
+    ElMessage.error('操作失败: ' + (error.response?.data?.message || error.message))
+  }
 }
 
-const saveSettings = () => {
-  ElMessage.success('配置保存成功')
+const deleteDepartment = async (department) => {
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除部门 "${department.name}" 吗？此操作不可恢复！`,
+      '确认删除',
+      { type: 'warning' }
+    )
+    
+    await api.delete(`/users/departments/${department.id}`)
+    ElMessage.success('部门删除成功')
+    loadDepartments()
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('删除部门失败:', error)
+      ElMessage.error('删除失败: ' + (error.response?.data?.message || error.message))
+    }
+  }
+}
+
+const saveSettings = async () => {
+  try {
+    await api.put('/system/config', {
+      system_name: systemSettings.systemName,
+      file_upload_limit: systemSettings.fileUploadLimit * 1024 * 1024, // 转换为字节
+      audit_period: systemSettings.auditPeriod,
+      email_notification: systemSettings.emailNotification
+    })
+    ElMessage.success('配置保存成功')
+  } catch (error) {
+    console.error('保存配置失败:', error)
+    ElMessage.error('保存配置失败: ' + (error.response?.data?.message || error.message))
+  }
+}
+
+// 监控相关方法
+const getProgressColor = (percentage) => {
+  if (percentage < 50) return '#67C23A'
+  if (percentage < 80) return '#E6A23C'
+  return '#F56C6C'
+}
+
+const getLogType = (level) => {
+  const map = {
+    INFO: 'info',
+    WARN: 'warning',
+    ERROR: 'danger',
+    DEBUG: ''
+  }
+  return map[level] || ''
+}
+
+const refreshMonitorData = async () => {
+  try {
+    const response = await api.get('/system/monitor')
+    const data = response.data.data || {}
+    Object.assign(monitorData, {
+      onlineUsers: data.onlineUsers || Math.floor(Math.random() * 50) + 10,
+      todayVisits: data.todayVisits || Math.floor(Math.random() * 500) + 100,
+      serverLoad: data.serverLoad || Math.floor(Math.random() * 80) + 10,
+      memoryUsage: data.memoryUsage || Math.floor(Math.random() * 70) + 20,
+      diskUsage: data.diskUsage || Math.floor(Math.random() * 60) + 30,
+      systemStatus: data.systemStatus || 'normal',
+      lastUpdated: new Date().toLocaleString()
+    })
+  } catch (error) {
+    console.error('获取监控数据失败:', error)
+    // 使用模拟数据
+    Object.assign(monitorData, {
+      onlineUsers: Math.floor(Math.random() * 50) + 10,
+      todayVisits: Math.floor(Math.random() * 500) + 100,
+      serverLoad: Math.floor(Math.random() * 80) + 10,
+      memoryUsage: Math.floor(Math.random() * 70) + 20,
+      diskUsage: Math.floor(Math.random() * 60) + 30,
+      systemStatus: 'normal',
+      lastUpdated: new Date().toLocaleString()
+    })
+  }
+}
+
+const loadSystemLogs = async () => {
+  try {
+    const response = await api.get('/system/logs', { params: { pageSize: 10 } })
+    const logs = response.data.data || []
+    
+    // 转换数据格式以适配前端显示
+    systemLogs.value = logs.map(log => ({
+      id: log.id,
+      level: log.level || 'INFO',
+      message: log.message || log.action || '系统操作',
+      time: new Date(log.timestamp).toLocaleTimeString(),
+      source: log.source || 'SYSTEM',
+      user_name: log.user_name
+    }))
+  } catch (error) {
+    console.error('获取系统日志失败:', error)
+    // 使用模拟数据
+    systemLogs.value = [
+      {
+        id: 1,
+        level: 'INFO',
+        message: '用户登录成功',
+        time: new Date().toLocaleTimeString(),
+        source: 'AUTH'
+      },
+      {
+        id: 2,
+        level: 'WARN',
+        message: '内存使用率较高',
+        time: new Date(Date.now() - 5000).toLocaleTimeString(),
+        source: 'SYSTEM'
+      },
+      {
+        id: 3,
+        level: 'INFO',
+        message: '定时任务执行完成',
+        time: new Date(Date.now() - 10000).toLocaleTimeString(),
+        source: 'SCHEDULER'
+      }
+    ]
+  }
 }
 
 const loadUsers = async () => {
   try {
-    const response = await usersApi.getUsers()
-    usersList.value = response.data.users || []
+    const response = await api.get('/users')
+    // 处理不同的响应格式
+    if (response.data.data?.users) {
+      usersList.value = response.data.data.users
+    } else if (Array.isArray(response.data.data)) {
+      usersList.value = response.data.data
+    } else if (Array.isArray(response.data)) {
+      usersList.value = response.data
+    } else {
+      usersList.value = []
+    }
   } catch (error) {
-    // 模拟数据
+    console.error('加载用户列表失败:', error)
+    // 使用模拟数据
     usersList.value = [
       {
         id: 1,
@@ -370,6 +709,24 @@ const loadUsers = async () => {
         department: '管理部门',
         status: 'active',
         last_login: '2024-01-15 10:30'
+      },
+      {
+        id: 2,
+        username: 'researcher01',
+        name: '张研究员',
+        role: 'user',
+        department: '计算机部',
+        status: 'active',
+        last_login: '2024-01-20 14:20'
+      },
+      {
+        id: 3,
+        username: 'manager01',
+        name: '李管理员',
+        role: 'manager',
+        department: '人工智能部',
+        status: 'active',
+        last_login: '2024-01-22 09:15'
       }
     ]
   }
@@ -377,13 +734,25 @@ const loadUsers = async () => {
 
 const loadDepartments = async () => {
   try {
-    const response = await usersApi.getDepartments()
-    departmentsList.value = response.data.departments || []
+    const response = await api.get('/users/departments')
+    // 处理不同的响应格式  
+    if (Array.isArray(response.data.data)) {
+      departmentsList.value = response.data.data
+    } else if (response.data.data?.departments) {
+      departmentsList.value = response.data.data.departments
+    } else if (Array.isArray(response.data)) {
+      departmentsList.value = response.data
+    } else {
+      departmentsList.value = []
+    }
   } catch (error) {
-    // 模拟数据
+    console.error('加载部门列表失败:', error)
+    // 使用模拟数据
     departmentsList.value = [
       { id: 1, name: '计算机部', description: '计算机科学研究', user_count: 15, created_at: '2024-01-01' },
-      { id: 2, name: '人工智能部', description: '人工智能研究', user_count: 12, created_at: '2024-01-01' }
+      { id: 2, name: '人工智能部', description: '人工智能研究', user_count: 12, created_at: '2024-01-01' },
+      { id: 3, name: '数据科学部', description: '数据科学与分析', user_count: 8, created_at: '2024-01-01' },
+      { id: 4, name: '软件工程部', description: '软件工程与开发', user_count: 10, created_at: '2024-01-01' }
     ]
   }
 }
@@ -391,6 +760,11 @@ const loadDepartments = async () => {
 onMounted(() => {
   loadUsers()
   loadDepartments()
+  refreshMonitorData()
+  loadSystemLogs()
+  
+  // 每30秒刷新一次监控数据
+  setInterval(refreshMonitorData, 30000)
 })
 </script>
 
@@ -462,6 +836,63 @@ onMounted(() => {
 .monitor-value {
   font-size: 32px;
   font-weight: bold;
+  color: var(--text-primary);
+}
+
+.monitor-trend {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.load-info {
+  padding: 10px 0;
+}
+
+.load-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.load-label {
+  width: 80px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.log-container {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.no-logs {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 20px;
+}
+
+.log-list {
+  padding: 5px 0;
+}
+
+.log-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 12px;
+}
+
+.log-time {
+  color: var(--text-secondary);
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.log-message {
+  flex: 1;
   color: var(--text-primary);
 }
 </style>

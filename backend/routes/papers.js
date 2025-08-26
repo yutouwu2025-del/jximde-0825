@@ -537,6 +537,32 @@ router.get('/:id',
   })
 );
 
+// 撤回论文（仅作者可撤回且状态必须为 pending）
+router.post('/:id/withdraw', 
+  validateId,
+  checkOwnership('id', 'user_id', 'papers'),
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const papers = await executeQuery(
+      'SELECT status FROM papers WHERE id = ?',
+      [id]
+    );
+    if (papers.length === 0) {
+      throw new AppError('论文不存在', 404);
+    }
+    if (papers[0].status !== 'pending') {
+      throw new AppError('仅待审核状态的论文可撤回', 400);
+    }
+    await executeQuery(`
+      UPDATE papers 
+      SET status = 'draft', auditor_id = NULL, audit_time = NULL, audit_comment = NULL, updated_at = NOW()
+      WHERE id = ?
+    `, [id]);
+    businessLogger('PAPER_WITHDRAWN', req.user, { paperId: id });
+    res.json({ success: true, message: '论文已撤回为草稿' });
+  })
+);
+
 // 创建论文
 router.post('/', 
   validatePaperCreate, 
@@ -553,10 +579,10 @@ router.post('/',
     const result = await executeQuery(`
       INSERT INTO papers (
         title, authors, first_author, corresponding_author, 
-        journal_name, journal_id, partition_info, publish_year, publish_date,
+        journal_name, journal_id, issn, partition_info, publish_year, publish_date,
         volume, issue, pages, doi, abstract, keywords, type, 
         status, user_id, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       paperData.title,
       paperData.authors,
@@ -564,6 +590,7 @@ router.post('/',
       paperData.corresponding_author,
       paperData.journal_name,
       paperData.journal_id || null,
+      paperData.issn || null,
       paperData.partition_info || null,
       paperData.publish_year,
       paperData.publish_date || null,
@@ -620,8 +647,8 @@ router.put('/:id',
       throw new AppError('论文不存在', 404);
     }
     
-    if (!['draft', 'pending'].includes(currentPaper[0].status)) {
-      throw new AppError('只有草稿和待审核状态的论文可以编辑', 400);
+    if (!['draft', 'pending', 'rejected'].includes(currentPaper[0].status)) {
+      throw new AppError('只有草稿、待审核或已拒绝状态的论文可以编辑', 400);
     }
     
     // 处理authors字段
@@ -799,7 +826,11 @@ router.post('/:id/upload',
     
     const filePath = `uploads/papers/${req.file.filename}`;
     const fileSize = req.file.size;
-    const originalName = req.file.originalname;
+    // 兼容浏览器上传中文名可能出现的 latin1 编码问题
+    let originalName = req.file.originalname;
+    try {
+      originalName = Buffer.from(originalName, 'latin1').toString('utf8');
+    } catch (e) {}
     
     // 更新论文文件信息
     await executeQuery(`
@@ -856,7 +887,11 @@ router.get('/:id/download',
     
     businessLogger('PAPER_FILE_DOWNLOADED', req.user, { paperId: id });
     
-    res.download(filePath, paper.file_name || 'paper.pdf');
+    const originalName = paper.file_name || 'paper.pdf'
+    const utf8Name = encodeURIComponent(originalName)
+    res.setHeader('Content-Type', 'application/octet-stream')
+    res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${utf8Name}; filename="${originalName}"`)
+    return res.sendFile(filePath)
   })
 );
 

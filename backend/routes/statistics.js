@@ -53,6 +53,9 @@ router.get('/overview',
     const whereClause = whereConditions.length > 0 
       ? `WHERE ${whereConditions.join(' AND ')}`
       : '';
+    const approvedWhereClause = whereClause
+      ? `${whereClause} AND p.status = 'approved'`
+      : `WHERE p.status = 'approved'`;
     
     // 并行执行多个统计查询
     const [
@@ -80,13 +83,20 @@ router.get('/overview',
         SELECT 
           p.status,
           COUNT(*) as count,
-          ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM papers p2 
-            LEFT JOIN users u2 ON p2.user_id = u2.id ${whereClause.replace(/p\./g, 'p2.').replace(/u\./g, 'u2.')}), 2) as percentage
+          ROUND(
+            COUNT(*) * 100.0 /
+            NULLIF(
+              (SELECT COUNT(*) FROM papers p2 
+               LEFT JOIN users u2 ON p2.user_id = u2.id ${whereClause.replace(/p\./g, 'p2.').replace(/u\./g, 'u2.')}),
+              0
+            ),
+            2
+          ) as percentage
         FROM papers p
         LEFT JOIN users u ON p.user_id = u.id
         ${whereClause}
         GROUP BY p.status
-      `, queryParams),
+      `, [...queryParams, ...queryParams]),
       
       // 按类型统计
       executeQuery(`
@@ -109,13 +119,13 @@ router.get('/overview',
             WHEN p.partition_info LIKE '%Q3%' THEN 'Q3'
             WHEN p.partition_info LIKE '%Q4%' THEN 'Q4'
             ELSE '未分区'
-          END as \`partition\`,
+          END as partition_label,
           COUNT(*) as count
         FROM papers p
         LEFT JOIN users u ON p.user_id = u.id
-        ${whereClause} AND p.status = 'approved'
-        GROUP BY \`partition\`
-        ORDER BY \`partition\`
+        ${approvedWhereClause}
+        GROUP BY partition_label
+        ORDER BY partition_label
       `, queryParams),
       
       // 高产用户排行
@@ -170,7 +180,7 @@ router.get('/overview',
         approvedCount: item.approved_count
       })),
       byPartition: partitionStats.map(item => ({
-        partition: item.partition,
+        partition: item.partition_label,
         count: item.count
       })),
       topUsers: topUsers.map(item => ({
@@ -209,7 +219,7 @@ router.get('/trends',
   validateStatisticsQuery,
   checkPermission('statistics', 'read'),
   catchAsync(async (req, res) => {
-    const { 
+    let { 
       startDate, 
       endDate, 
       dimension = 'month',
@@ -218,23 +228,23 @@ router.get('/trends',
     
     const startTime = Date.now();
     
-    // 根据维度确定日期格式
-    let dateFormat, groupBy;
+    // 根据维度确定分组表达式与展示字段，避免 ONLY_FULL_GROUP_BY 报错
+    let periodExpr, groupBy;
     switch (dimension) {
       case 'day':
-        dateFormat = '%Y-%m-%d';
+        periodExpr = 'DATE(p.created_at)';
         groupBy = 'DATE(p.created_at)';
         break;
       case 'month':
-        dateFormat = '%Y-%m';
+        periodExpr = 'DATE_FORMAT(p.created_at, "%Y-%m")';
         groupBy = 'DATE_FORMAT(p.created_at, "%Y-%m")';
         break;
       case 'year':
-        dateFormat = '%Y';
+        periodExpr = 'YEAR(p.created_at)';
         groupBy = 'YEAR(p.created_at)';
         break;
       default:
-        dateFormat = '%Y-%m';
+        periodExpr = 'DATE_FORMAT(p.created_at, "%Y-%m")';
         groupBy = 'DATE_FORMAT(p.created_at, "%Y-%m")';
     }
     
@@ -251,14 +261,37 @@ router.get('/trends',
       queryParams.push(req.user.departmentId);
     }
     
-    if (startDate) {
-      whereConditions.push('p.created_at >= ?');
-      queryParams.push(startDate);
-    }
-    
-    if (endDate) {
-      whereConditions.push('p.created_at <= ?');
-      queryParams.push(endDate);
+    // 规范日期参数，特别是 day 维度时仅比较日期部分，避免时区/类型问题
+    const formatDateOnly = (d) => {
+      if (!d) return null;
+      const dt = new Date(d);
+      if (Number.isNaN(dt.getTime())) return null;
+      const y = dt.getFullYear();
+      const m = String(dt.getMonth() + 1).padStart(2, '0');
+      const day = String(dt.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
+    if (dimension === 'day') {
+      const sd = formatDateOnly(startDate);
+      const ed = formatDateOnly(endDate);
+      if (sd) {
+        whereConditions.push('DATE(p.created_at) >= ?');
+        queryParams.push(sd);
+      }
+      if (ed) {
+        whereConditions.push('DATE(p.created_at) <= ?');
+        queryParams.push(ed);
+      }
+    } else {
+      if (startDate) {
+        whereConditions.push('p.created_at >= ?');
+        queryParams.push(startDate);
+      }
+      
+      if (endDate) {
+        whereConditions.push('p.created_at <= ?');
+        queryParams.push(endDate);
+      }
     }
     
     if (department_id) {
@@ -272,7 +305,7 @@ router.get('/trends',
     
     const trends = await executeQuery(`
       SELECT 
-        DATE_FORMAT(p.created_at, '${dateFormat}') as period,
+        ${periodExpr} as period,
         COUNT(*) as total_papers,
         COUNT(CASE WHEN p.status = 'approved' THEN 1 END) as approved_papers,
         COUNT(CASE WHEN p.status = 'pending' THEN 1 END) as pending_papers,

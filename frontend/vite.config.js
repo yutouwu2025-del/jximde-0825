@@ -24,11 +24,10 @@ export default defineConfig({
   server: {
     host: '0.0.0.0', // 允许外部访问
     port: 8080,
-    proxy: {
-      '/api': {
-        target: 'http://192.168.45.47:3000',
-        changeOrigin: true
-      }
+    strictPort: true, // 强制使用指定端口，如果被占用则报错
+    hmr: {
+      port: 8080,
+      host: 'localhost'
     }
   }
 })

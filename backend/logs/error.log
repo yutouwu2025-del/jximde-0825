@@ -880,3 +880,493 @@
   level: 'error',
   message: 'HTTP Request'
 }
+{"ip":"192.168.45.47","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\system.js:268:7\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:119:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)","timestamp":"2025-08-26T02:23:53.788Z","url":"/api/system/logs","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/system/logs',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 10:23:53',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '11ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\system.js:268:7\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:119:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)","timestamp":"2025-08-26T02:25:55.126Z","url":"/api/system/logs","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/system/logs',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 10:25:55',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '13ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\system.js:268:7\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:119:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)","timestamp":"2025-08-26T02:26:00.698Z","url":"/api/system/logs","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/system/logs',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 10:26:00',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '10ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\system.js:268:7\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:119:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)","timestamp":"2025-08-26T02:26:24.743Z","url":"/api/system/logs","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/system/logs',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 10:26:24',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '8ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\system.js:268:7\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:119:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)","timestamp":"2025-08-26T02:29:00.907Z","url":"/api/system/logs","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/system/logs',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 10:29:00',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '5ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\system.js:268:7\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:119:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)","timestamp":"2025-08-26T02:29:09.621Z","url":"/api/system/logs","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/system/logs',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 10:29:09',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '9ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Incorrect arguments to mysqld_stmt_execute","method":"GET","stack":"Error: Incorrect arguments to mysqld_stmt_execute\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\system.js:268:7\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:119:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)","timestamp":"2025-08-26T02:29:29.956Z","url":"/api/system/logs","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/system/logs',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 10:29:29',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '6ms',
+  responseSize: 1716,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"只有草稿和待审核状态的论文可以编辑","method":"PUT","stack":"Error: 只有草稿和待审核状态的论文可以编辑\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\papers.js:651:13\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T06:41:24.758Z","url":"/api/papers/15","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"ip":"192.168.45.47","level":"error","message":"只有草稿和待审核状态的论文可以编辑","method":"PUT","stack":"Error: 只有草稿和待审核状态的论文可以编辑\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\papers.js:651:13\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T06:41:31.420Z","url":"/api/papers/15","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"ip":"192.168.45.47","level":"error","message":"只有草稿和待审核状态的论文可以编辑","method":"PUT","stack":"Error: 只有草稿和待审核状态的论文可以编辑\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\papers.js:651:13\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T06:41:38.619Z","url":"/api/papers/15","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"ip":"192.168.45.47","level":"error","message":"只有草稿和待审核状态的论文可以编辑","method":"PUT","stack":"Error: 只有草稿和待审核状态的论文可以编辑\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\papers.js:651:13\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T06:41:45.385Z","url":"/api/papers/15","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{"ip":"192.168.45.47","level":"error","message":"Malformed communication packet.","method":"GET","stack":"Error: Malformed communication packet.\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:79:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T06:55:58.475Z","url":"/api/statistics/overview?dimension=year&type=","user":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/overview?dimension=year&type=',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 14:55:58',
+  userId: 4,
+  username: 'researcher1',
+  statusCode: 500,
+  responseTime: '13ms',
+  responseSize: 1694,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Malformed communication packet.","method":"GET","stack":"Error: Malformed communication packet.\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:79:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T06:57:34.424Z","url":"/api/statistics/overview?dimension=year&type=","user":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/overview?dimension=year&type=',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 14:57:34',
+  userId: 4,
+  username: 'researcher1',
+  statusCode: 500,
+  responseTime: '5ms',
+  responseSize: 1694,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Malformed communication packet.","method":"GET","stack":"Error: Malformed communication packet.\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:79:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T06:57:39.356Z","url":"/api/statistics/overview?dimension=year&type=","user":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/overview?dimension=year&type=',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 14:57:39',
+  userId: 4,
+  username: 'researcher1',
+  statusCode: 500,
+  responseTime: '4ms',
+  responseSize: 1694,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Malformed communication packet.","method":"GET","stack":"Error: Malformed communication packet.\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:79:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T07:05:21.181Z","url":"/api/statistics/overview?dimension=year&type=","user":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/overview?dimension=year&type=',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:05:21',
+  userId: 4,
+  username: 'researcher1',
+  statusCode: 500,
+  responseTime: '5ms',
+  responseSize: 1694,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Malformed communication packet.","method":"GET","stack":"Error: Malformed communication packet.\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:79:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T07:06:11.315Z","url":"/api/statistics/overview?dimension=year&type=","user":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/overview?dimension=year&type=',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:06:11',
+  userId: 4,
+  username: 'researcher1',
+  statusCode: 500,
+  responseTime: '8ms',
+  responseSize: 1694,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Malformed communication packet.","method":"GET","stack":"Error: Malformed communication packet.\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:79:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T07:06:27.554Z","url":"/api/statistics/overview?dimension=year&type=","user":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/overview?dimension=year&type=',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:06:27',
+  userId: 4,
+  username: 'researcher1',
+  statusCode: 500,
+  responseTime: '5ms',
+  responseSize: 1694,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Malformed communication packet.","method":"GET","stack":"Error: Malformed communication packet.\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:82:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-26T07:09:35.632Z","url":"/api/statistics/overview?dimension=year&type=","user":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/overview?dimension=year&type=',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:09:35',
+  userId: 4,
+  username: 'researcher1',
+  statusCode: 500,
+  responseTime: '37ms',
+  responseSize: 1694,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T07:53:41.063Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:53:41',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '19ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T07:53:43.444Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:53:43',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '9ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T07:54:58.325Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:54:58',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '4ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T07:55:05.046Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:55:05',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '7ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T07:55:19.886Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:55:19',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '5ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T07:58:18.950Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:58:18',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '5ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T07:58:55.099Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 15:58:55',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '7ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T08:05:00.369Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 16:05:00',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '3ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T08:05:11.350Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 16:05:11',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '4ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T08:06:54.052Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 16:06:54',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '8ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:283:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T08:07:21.542Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 16:07:21',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '4ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:306:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T08:13:46.138Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 16:13:46',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '17ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}
+{"ip":"192.168.45.47","level":"error","message":"Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by","method":"GET","stack":"Error: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'research_paper_db.p.created_at' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by\n    at PromisePool.execute (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\mysql2\\lib\\promise\\pool.js:54:22)\n    at executeQuery (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\config\\database.js:61:38)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\routes\\statistics.js:306:26\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\errorHandler.js:230:21\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\auth.js:221:5\n    at Layer.handle [as handle_request] (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Administrator\\Desktop\\claude code - AI编程类应用-jx\\backend\\middleware\\validator.js:33:5","timestamp":"2025-08-26T08:14:09.482Z","url":"/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26","user":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+{
+  method: 'GET',
+  url: '/api/statistics/trends?dimension=day&startDate=2025-08-26&endDate=2025-08-26',
+  ip: '192.168.45.47',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+  contentType: undefined,
+  contentLength: undefined,
+  timestamp: '2025-08-26 16:14:09',
+  userId: 1,
+  username: 'admin',
+  statusCode: 500,
+  responseTime: '8ms',
+  responseSize: 2116,
+  success: false,
+  level: 'error',
+  message: 'HTTP Request'
+}

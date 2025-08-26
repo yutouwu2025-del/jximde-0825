@@ -84,7 +84,10 @@ const userSchemas = {
   update: Joi.object({
     name: Joi.string().min(2).max(50),
     role: Joi.string().valid('user', 'manager', 'secretary', 'admin'),
-    department_id: Joi.number().integer().positive().allow(null),
+    department_id: Joi.alternatives().try(
+      Joi.number().integer().positive(),
+      Joi.allow(null)
+    ),
     email: Joi.string().email().max(100).allow(''),
     phone: Joi.string().max(20).allow(''),
     status: Joi.string().valid('active', 'inactive')
@@ -137,6 +140,9 @@ const paperSchemas = {
     first_author: Joi.string().max(100).required(),
     corresponding_author: Joi.string().max(100).required(),
     journal_name: Joi.string().max(200).required(),
+    issn: Joi.string().pattern(/^\d{4}-?\d{3}[\dX]$/i).allow('').messages({
+      'string.pattern.base': 'ISSN 格式应为 1234-567X'
+    }),
     journal_id: Joi.string().max(100).allow(''),
     partition_info: Joi.string().max(50).allow(''),
     publish_year: Joi.number()
@@ -172,6 +178,9 @@ const paperSchemas = {
     first_author: Joi.string().max(100),
     corresponding_author: Joi.string().max(100),
     journal_name: Joi.string().max(200),
+    issn: Joi.string().pattern(/^\d{4}-?\d{3}[\dX]$/i).allow('').messages({
+      'string.pattern.base': 'ISSN 格式应为 1234-567X'
+    }),
     journal_id: Joi.string().max(100).allow(''),
     partition_info: Joi.string().max(50).allow(''),
     publish_year: Joi.number().integer().min(1900).max(new Date().getFullYear() + 1),
@@ -284,7 +293,7 @@ const querySchemas = {
     endDate: Joi.date().min(Joi.ref('startDate')).allow(null),
     department_id: Joi.number().integer().positive().allow(null),
     type: Joi.string().valid('journal', 'conference', 'degree').allow(''),
-    dimension: Joi.string().valid('year', 'department', 'person', 'partition').default('year')
+    dimension: Joi.string().valid('day', 'year', 'month', 'department', 'person', 'partition').default('year')
   })
 };
 

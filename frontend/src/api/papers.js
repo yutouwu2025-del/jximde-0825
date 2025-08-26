@@ -52,14 +52,17 @@ export const papersApi = {
 
   // 审核论文
   auditPaper(id, auditData) {
-    return api.post(`/papers/${id}/audit`, auditData)
+    // 后端使用 PUT 且期望 { status, audit_comment }
+    return api.put(`/papers/${id}/audit`, auditData)
   },
 
   // 批量审核论文
   batchAuditPapers(paperIds, auditData) {
+    // 后端期望 { paper_ids, status, audit_comment }
     return api.post('/papers/batch-audit', {
-      paperIds,
-      ...auditData
+      paper_ids: paperIds,
+      status: auditData.status,
+      audit_comment: auditData.audit_comment || ''
     })
   },
 

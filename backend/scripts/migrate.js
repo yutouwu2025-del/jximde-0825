@@ -188,6 +188,7 @@ async function createIndexes(connection) {
     'CREATE INDEX idx_papers_user_status ON papers(user_id, status)',
     'CREATE INDEX idx_papers_type_year ON papers(type, publish_year)',
     'CREATE INDEX idx_papers_audit ON papers(auditor_id, audit_time)',
+    'CREATE INDEX idx_papers_issn ON papers(issn)',
     
     // 通知表索引
     'CREATE INDEX idx_notifications_status_created ON notifications(status, created_at)',

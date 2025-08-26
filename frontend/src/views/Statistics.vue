@@ -69,6 +69,28 @@
       <el-col :span="6">
         <div class="stat-card">
           <div class="stat-icon success">
+            <el-icon><Check /></el-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ overviewStats.approved }}</div>
+            <div class="stat-label">已通过</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="stat-card">
+          <div class="stat-icon warning">
+            <el-icon><Clock /></el-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ overviewStats.pending }}</div>
+            <div class="stat-label">待审核</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="stat-card">
+          <div class="stat-icon success">
             <el-icon><Star /></el-icon>
           </div>
           <div class="stat-content">
@@ -132,6 +154,7 @@
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { papersApi } from '../api/papers'
+import api from '../api/index'
 import * as echarts from 'echarts'
 
 // 响应式数据
@@ -142,7 +165,8 @@ const departmentChartRef = ref(null)
 
 // 筛选条件
 const filters = reactive({
-  year: new Date().getFullYear().toString(),
+  // 默认查询“所有年份”，仅当用户选择年份时才带 year 参数
+  year: '',
   dimension: 'year',
   type: ''
 })
@@ -150,38 +174,109 @@ const filters = reactive({
 // 统计数据
 const overviewStats = reactive({
   total: 0,
+  approved: 0,
+  pending: 0,
   highQuality: 0,
   growth: 0,
   topRank: 0
 })
 
-// 加载统计数据
+// 加载统计数据（节流+429重试）
+let statsLoading = false
+let lastStatsAt = 0
 const loadStatistics = async () => {
-  try {
-    const response = await papersApi.getPaperStats(filters)
-    
-    // 更新概览数据
-    Object.assign(overviewStats, {
-      total: response.data.total || 0,
-      highQuality: response.data.highQuality || 0,
-      growth: response.data.growth || 0,
-      topRank: response.data.topRank || 0
-    })
-    
-    // 更新图表
-    updateCharts(response.data.charts || {})
-  } catch (error) {
-    console.error('加载统计数据失败:', error)
-    // 使用模拟数据
-    Object.assign(overviewStats, {
-      total: 125,
-      highQuality: 68,
-      growth: 23,
-      topRank: 3
-    })
-    
-    // 模拟图表数据
-    updateChartsWithMockData()
+  const now = Date.now()
+  if (statsLoading || now - lastStatsAt < 800) return
+  statsLoading = true
+  lastStatsAt = now
+  const maxRetries = 3
+  let attempt = 0
+  while (attempt < maxRetries) {
+    try {
+      // 构建查询参数
+      const query = {
+        dimension: filters.dimension,
+        type: filters.type
+      }
+      if (filters.year) {
+        query.year = Number(filters.year)
+      }
+      
+      // 使用统计API获取概览数据
+      const [overviewResponse, trendsResponse, departmentResponse] = await Promise.all([
+        api.get('/statistics/overview', { params: query }).catch(() => ({ data: { data: null } })),
+        api.get('/statistics/trends', { params: { ...query, dimension: 'month' } }).catch(() => ({ data: { data: null } })),
+        api.get('/statistics/by-department', { params: query }).catch(() => ({ data: { data: null } })),
+      ])
+      
+      const overviewData = overviewResponse.data?.data
+      const trendsData = trendsResponse.data?.data
+      const departmentData = departmentResponse.data?.data
+      
+      if (overviewData) {
+        // 根据后端API实际返回的数据结构来解析
+        const totalStats = overviewData.total || {}
+        const statusStats = overviewData.byStatus || []
+        const partitionStats = overviewData.byPartition || []
+        const totalPapers = Number(totalStats.total_papers || 0)
+        const approvedPapers = Number(totalStats.approved_papers || 0)
+        const pendingFromStatus = Number((statusStats.find(s => s.status === 'pending')?.count) || 0)
+        const rejectedFromStatus = Number((statusStats.find(s => s.status === 'rejected')?.count) || 0)
+        const pendingPapers = pendingFromStatus || Math.max(totalPapers - approvedPapers - rejectedFromStatus, 0)
+        const highQualityPapers = (partitionStats || [])
+          .filter(p => ['Q1', 'Q2'].includes(p.partition))
+          .reduce((sum, p) => sum + Number(p.count || 0), 0)
+        
+        Object.assign(overviewStats, {
+          total: totalPapers,
+          approved: approvedPapers,
+          pending: pendingPapers,
+          highQuality: highQualityPapers,
+          growth: 15, // 可以根据趋势数据计算
+          topRank: 3  // 可以根据部门排名计算
+        })
+        
+        // 更新图表数据
+        updateCharts({
+          trend: trendsData?.trends || [],
+          partition: partitionStats,
+          department: departmentData || []
+        })
+      } else {
+        // 使用模拟数据
+        Object.assign(overviewStats, {
+          total: 125,
+          approved: 98,
+          pending: 15,
+          highQuality: 68,
+          growth: 23,
+          topRank: 3
+        })
+        updateChartsWithMockData()
+      }
+      
+      break
+    } catch (error) {
+      if (error?.response?.status === 429 && attempt < maxRetries - 1) {
+        const backoff = Math.pow(2, attempt) * 300
+        await new Promise(r => setTimeout(r, backoff))
+        attempt++
+        continue
+      }
+      console.error('加载统计数据失败:', error)
+      Object.assign(overviewStats, {
+        total: 125,
+        approved: 98,
+        pending: 15,
+        highQuality: 68,
+        growth: 23,
+        topRank: 3
+      })
+      updateChartsWithMockData()
+      break
+    } finally {
+      statsLoading = false
+    }
   }
 }
 
@@ -204,21 +299,21 @@ const updateTrendChart = (data) => {
     legend: { data: ['论文数量', '高质量论文'] },
     xAxis: {
       type: 'category',
-      data: data.map(item => item.month) || ['1月', '2月', '3月', '4月', '5月', '6月']
+      data: data.map(item => item.period) || ['1月', '2月', '3月', '4月', '5月', '6月']
     },
     yAxis: { type: 'value' },
     series: [
       {
         name: '论文数量',
         type: 'line',
-        data: data.map(item => item.total) || [12, 18, 15, 22, 19, 25],
+        data: data.map(item => item.totalPapers) || [12, 18, 15, 22, 19, 25],
         smooth: true,
         itemStyle: { color: '#1890ff' }
       },
       {
         name: '高质量论文',
         type: 'line',
-        data: data.map(item => item.highQuality) || [8, 12, 10, 15, 13, 18],
+        data: data.map(item => (item.q1Papers || 0) + (item.q2Papers || 0)) || [8, 12, 10, 15, 13, 18],
         smooth: true,
         itemStyle: { color: '#52c41a' }
       }
@@ -239,7 +334,10 @@ const updatePartitionChart = (data) => {
       {
         type: 'pie',
         radius: '50%',
-        data: data.length ? data : [
+        data: data.length ? data.map(item => ({
+          value: item.count,
+          name: item.partition
+        })) : [
           { value: 35, name: 'Q1区' },
           { value: 28, name: 'Q2区' },
           { value: 22, name: 'Q3区' },
@@ -268,20 +366,20 @@ const updateDepartmentChart = (data) => {
     legend: { data: ['论文数量', '高质量论文'] },
     xAxis: {
       type: 'category',
-      data: data.map(item => item.department) || ['计算机部', '人工智能部', '数据科学部', '软件工程部']
+      data: data.map(item => item.departmentName) || ['计算机部', '人工智能部', '数据科学部', '软件工程部']
     },
     yAxis: { type: 'value' },
     series: [
       {
         name: '论文数量',
         type: 'bar',
-        data: data.map(item => item.total) || [45, 38, 32, 28],
+        data: data.map(item => item.totalPapers) || [45, 38, 32, 28],
         itemStyle: { color: '#1890ff' }
       },
       {
         name: '高质量论文',
         type: 'bar',
-        data: data.map(item => item.highQuality) || [25, 22, 18, 15],
+        data: data.map(item => (item.q1Papers || 0) + (item.q2Papers || 0)) || [25, 22, 18, 15],
         itemStyle: { color: '#52c41a' }
       }
     ]
@@ -302,19 +400,37 @@ const updateChartsWithMockData = () => {
 const exportData = async () => {
   exportLoading.value = true
   try {
-    const response = await papersApi.exportPapers(filters)
+    const params = {
+      format: 'csv',
+      type: 'overview',
+      ...(filters.year && { year: filters.year }),
+      ...(filters.dimension && { dimension: filters.dimension }),
+      ...(filters.type && { type: filters.type })
+    }
+    
+    const response = await api.get('/statistics/export', {
+      params,
+      responseType: 'blob'
+    })
     
     // 创建下载链接
     const url = window.URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')
     link.href = url
-    link.download = `论文统计报表_${filters.year}.xlsx`
+    
+    // 根据筛选条件生成文件名
+    const fileName = `统计报表_${filters.dimension}_${filters.year || '全部'}_${new Date().toISOString().split('T')[0]}.csv`
+    link.download = fileName
+    
+    document.body.appendChild(link)
     link.click()
+    document.body.removeChild(link)
     window.URL.revokeObjectURL(url)
     
     ElMessage.success('导出成功')
   } catch (error) {
-    ElMessage.error('导出失败')
+    console.error('导出失败:', error)
+    ElMessage.error('导出失败: ' + (error.response?.data?.message || error.message))
   } finally {
     exportLoading.value = false
   }

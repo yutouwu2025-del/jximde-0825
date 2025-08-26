@@ -3,7 +3,7 @@ import { ElMessage } from 'element-plus'
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://localhost:3000/api',
   timeout: 30000, // 增加到30秒，适应期刊搜索需要的时间
   headers: {
     'Content-Type': 'application/json'
@@ -54,6 +54,9 @@ api.interceptors.response.use(
           break
         case 404:
           ElMessage.error('请求的资源不存在')
+          break
+        case 429:
+          ElMessage.error('请求过于频繁，请稍后重试')
           break
         case 500:
           ElMessage.error('服务器内部错误')

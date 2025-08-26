@@ -14,6 +14,7 @@ const authMiddleware = require('./middleware/auth');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
 const validator = require('./middleware/validator');
+const { requestLogger, userOnlineTracker } = require('./middleware/realTimeMonitor');
 
 // 导入路由
 const authRoutes = require('./routes/auth');
@@ -52,6 +53,14 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
       imgSrc: ["'self'", "data:", "https:"],
+      frameAncestors: [
+        "'self'",
+        'http://localhost:8080',
+        'http://127.0.0.1:8080',
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'http://192.168.45.47:8080'
+      ]
     },
   },
 }));
@@ -109,6 +118,9 @@ app.use(express.static('public'));
 // 日志中间件
 app.use(logger.requestLogger);
 
+// 实时监控中间件
+app.use(requestLogger);
+
 // 健康检查端点
 app.get('/health', (req, res) => {
   res.json({
@@ -121,16 +133,22 @@ app.get('/health', (req, res) => {
 
 // API路由
 app.use('/api/auth', authRoutes);
-app.use('/api/users', authMiddleware.authenticate, userRoutes);
-app.use('/api/papers', authMiddleware.authenticate, paperRoutes);
-app.use('/api/journals', authMiddleware.authenticate, journalRoutes);
-app.use('/api/notifications', authMiddleware.authenticate, notificationRoutes);
-app.use('/api/statistics', authMiddleware.authenticate, statisticsRoutes);
-app.use('/api/system', authMiddleware.authenticate, systemRoutes);
-app.use('/api/upload', authMiddleware.authenticate, uploadRoutes);
+app.use('/api/users', authMiddleware.authenticate, userOnlineTracker, userRoutes);
+app.use('/api/papers', authMiddleware.authenticate, userOnlineTracker, paperRoutes);
+app.use('/api/journals', authMiddleware.authenticate, userOnlineTracker, journalRoutes);
+app.use('/api/notifications', authMiddleware.authenticate, userOnlineTracker, notificationRoutes);
+app.use('/api/statistics', authMiddleware.authenticate, userOnlineTracker, statisticsRoutes);
+app.use('/api/system', authMiddleware.authenticate, userOnlineTracker, systemRoutes);
+app.use('/api/upload', authMiddleware.authenticate, userOnlineTracker, uploadRoutes);
 
 // 静态文件服务（上传的文件）
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  setHeaders: (res, filePath) => {
+    // 正确暴露文件名，避免中文乱码
+    const fileName = path.basename(filePath)
+    res.setHeader('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(fileName)}; filename="${fileName}"`)
+  }
+}));
 
 // 404处理
 app.use('*', (req, res) => {

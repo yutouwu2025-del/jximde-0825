@@ -110,16 +110,16 @@
       >
         <el-table-column type="selection" width="55" />
         
-        <el-table-column label="论文信息" min-width="300">
+        <el-table-column label="论文信息" min-width="260">
           <template #default="{ row }">
             <div class="paper-info">
               <div class="paper-title">{{ row.title }}</div>
               <div class="paper-meta">
                 <el-tag size="small" class="meta-tag">{{ getTypeText(row.type) }}</el-tag>
-                <span class="journal-name">{{ row.journal }}</span>
-                <span v-if="row.partition" class="partition">
-                  <el-tag size="small" :type="getPartitionType(row.partition)">
-                    {{ row.partition }}分区
+                <span class="journal-name">{{ row.journal_name }}</span>
+                <span v-if="row.partition_info" class="partition">
+                  <el-tag size="small" :type="getPartitionType(row.partition_info)">
+                    {{ row.partition_info }}分区
                   </el-tag>
                 </span>
               </div>
@@ -127,7 +127,7 @@
           </template>
         </el-table-column>
         
-        <el-table-column prop="first_author" label="第一作者" width="120" />
+        <el-table-column prop="first_author" label="第一作者" width="160" />
         
         <el-table-column label="状态" width="100">
           <template #default="{ row }">
@@ -143,21 +143,41 @@
           </template>
         </el-table-column>
         
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="220" fixed="right">
           <template #default="{ row }">
-            <div class="action-buttons">
-              <el-button text type="primary" size="small" @click="viewPaper(row)">
+            <div class="action-buttons" :class="{ compact: row.status === 'draft' || row.status === 'rejected' }">
+              <el-button v-if="row.status === 'approved'" text type="primary" size="small" @click="viewPaper(row)">
                 查看
               </el-button>
               
               <el-button
-                v-if="canEdit(row.status)"
+                v-if="canEdit(row.status) && row.status !== 'approved'"
                 text
                 type="warning"
                 size="small"
-                @click="editPaper(row)"
+                @click.stop="openEditDialog(row)"
               >
                 编辑
+              </el-button>
+              
+              <el-button
+                v-if="row.status === 'draft' || row.status === 'rejected'"
+                text
+                type="success"
+                size="small"
+                @click="submitForAudit(row)"
+              >
+                提交
+              </el-button>
+              
+              <el-button
+                v-if="canDelete(row.status)"
+                text
+                type="danger"
+                size="small"
+                @click="deletePaper(row)"
+              >
+                删除
               </el-button>
               
               <el-button
@@ -170,31 +190,7 @@
                 撤回
               </el-button>
               
-              <el-dropdown
-                trigger="click"
-                @command="(command) => handleMoreAction(command, row)"
-              >
-                <el-button text size="small">
-                  更多<el-icon><ArrowDown /></el-icon>
-                </el-button>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item command="download" v-if="row.file_url">
-                      <el-icon><Download /></el-icon>下载文件
-                    </el-dropdown-item>
-                    <el-dropdown-item command="history">
-                      <el-icon><Clock /></el-icon>查看历史
-                    </el-dropdown-item>
-                    <el-dropdown-item 
-                      command="delete" 
-                      v-if="canDelete(row.status)"
-                      divided
-                    >
-                      <el-icon><Delete /></el-icon>删除
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
+              
             </div>
           </template>
         </el-table-column>
@@ -245,11 +241,11 @@
             {{ getTypeText(currentPaper.type) }}
           </el-descriptions-item>
           <el-descriptions-item label="期刊名称">
-            {{ currentPaper.journal }}
+            {{ currentPaper.journal_name }}
           </el-descriptions-item>
           <el-descriptions-item label="期刊分区">
-            <el-tag :type="getPartitionType(currentPaper.partition)">
-              {{ currentPaper.partition }}分区
+            <el-tag :type="getPartitionType(currentPaper.partition_info)">
+              {{ currentPaper.partition_info }}分区
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="ISSN编号">
@@ -283,6 +279,21 @@
           </el-descriptions-item>
         </el-descriptions>
         
+        <!-- 附件预览与下载 -->
+        <div v-if="currentPaper.file_url || currentPaper.file_path" class="attachment-actions" style="margin-top: 16px;">
+          <h3>附件</h3>
+          <el-space>
+            <el-button type="primary" size="small" @click="previewPaperFile(currentPaper)">
+              <el-icon><View /></el-icon>
+              在线预览
+            </el-button>
+            <el-button type="info" size="small" @click="downloadPaperFile(currentPaper)">
+              <el-icon><Download /></el-icon>
+              下载文件
+            </el-button>
+          </el-space>
+        </div>
+        
         <!-- 审核记录 -->
         <div v-if="currentPaper.audit_records" class="audit-records">
           <h3>审核记录</h3>
@@ -309,6 +320,99 @@
         </div>
       </div>
     </el-drawer>
+
+    <!-- 编辑论文信息对话框（样式参考审核页） -->
+    <el-dialog
+      v-model="editDialog"
+      title="编辑论文信息"
+      width="70%"
+      :close-on-click-modal="false"
+      destroy-on-close
+    >
+      <el-form
+        ref="editFormRef"
+        :model="editForm"
+        :rules="editRules"
+        label-width="120px"
+      >
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="论文标题" prop="title">
+              <el-input v-model="editForm.title" maxlength="500" show-word-limit />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="论文类型" prop="type">
+              <el-select v-model="editForm.type" style="width: 100%">
+                <el-option label="期刊论文" value="journal" />
+                <el-option label="学会论文" value="conference" />
+                <el-option label="学位论文" value="degree" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发表年度" prop="publish_year">
+              <el-date-picker v-model="editForm.publish_year" type="year" value-format="YYYY" format="YYYY" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="期刊名称" prop="journal_name">
+              <el-input v-model="editForm.journal_name" maxlength="200" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="ISSN编号" prop="issn">
+              <el-input v-model="editForm.issn" maxlength="20" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="期刊分区">
+              <el-select v-model="editForm.partition_info" clearable style="width: 100%">
+                <el-option label="Q1分区" value="Q1" />
+                <el-option label="Q2分区" value="Q2" />
+                <el-option label="Q3分区" value="Q3" />
+                <el-option label="Q4分区" value="Q4" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="第一作者" prop="first_author">
+              <el-input v-model="editForm.first_author" maxlength="100" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="通讯作者" prop="corresponding_author">
+              <el-input v-model="editForm.corresponding_author" maxlength="100" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="DOI">
+              <el-input v-model="editForm.doi" maxlength="200" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <!-- 附件预览与下载 -->
+      <div v-if="currentPaper && (currentPaper.file_url || currentPaper.file_path)" class="attachment-actions" style="margin-top: 16px;">
+        <h3>附件</h3>
+        <el-space>
+          <el-button type="primary" size="small" @click="previewPaperFile(currentPaper)">
+            <el-icon><View /></el-icon>
+            在线预览
+          </el-button>
+          <el-button type="info" size="small" @click="downloadPaperFile(currentPaper)">
+            <el-icon><Download /></el-icon>
+            下载文件
+          </el-button>
+        </el-space>
+      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="editDialog = false">取消</el-button>
+          <el-button type="primary" @click="submitEdit">保存</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -402,6 +506,7 @@ const getPartitionType = (partition) => {
 
 // 判断是否可编辑
 const canEdit = (status) => {
+  // 仅在撤回后（草稿/被拒）可编辑；待审核不可直接编辑
   return ['draft', 'rejected'].includes(status)
 }
 
@@ -463,9 +568,71 @@ const viewPaper = (paper) => {
   loadPaperDetail(paper.id)
 }
 
-// 编辑论文
-const editPaper = (paper) => {
-  router.push(`/submit-paper?edit=${paper.id}`)
+// 打开编辑弹窗（沿用审核页的编辑信息风格）
+const editDialog = ref(false)
+const editFormRef = ref(null)
+const editForm = reactive({
+  title: '',
+  type: '',
+  publish_year: '',
+  journal_name: '',
+  issn: '',
+  partition_info: '',
+  first_author: '',
+  corresponding_author: '',
+  doi: ''
+})
+
+const editRules = {
+  title: [{ required: true, message: '请输入论文标题', trigger: 'blur' }],
+  type: [{ required: true, message: '请选择论文类型', trigger: 'change' }],
+  publish_year: [{ required: true, message: '请选择发表年度', trigger: 'change' }],
+  journal_name: [{ required: true, message: '请输入期刊名称', trigger: 'blur' }]
+}
+
+const openEditDialog = async (paper) => {
+  currentPaper.value = paper
+  // 拉取详情以确保完整信息
+  try {
+    const resp = await papersApi.getPaperDetail(paper.id)
+    const p = resp.data?.data || paper
+    Object.assign(editForm, {
+      title: p.title || '',
+      type: p.type || '',
+      publish_year: p.publish_year ? String(p.publish_year) : '',
+      journal_name: p.journal_name || '',
+      issn: p.issn || '',
+      partition_info: p.partition_info || '',
+      first_author: p.first_author || '',
+      corresponding_author: p.corresponding_author || '',
+      doi: p.doi || ''
+    })
+  } catch (e) {}
+  editDialog.value = true
+}
+
+const submitEdit = async () => {
+  if (!currentPaper.value) return
+  try {
+    const ok = await editFormRef.value?.validate()
+    if (ok === false) return
+    await papersApi.updatePaper(currentPaper.value.id, {
+      title: editForm.title,
+      type: editForm.type,
+      publish_year: Number(editForm.publish_year),
+      journal_name: editForm.journal_name,
+      issn: editForm.issn,
+      partition_info: editForm.partition_info,
+      first_author: editForm.first_author,
+      corresponding_author: editForm.corresponding_author,
+      doi: editForm.doi
+    })
+    ElMessage.success('保存成功')
+    editDialog.value = false
+    loadPapers()
+  } catch (e) {
+    ElMessage.error('保存失败')
+  }
 }
 
 // 撤回论文
@@ -492,26 +659,44 @@ const withdrawPaper = async (paper) => {
 }
 
 // 处理更多操作
-const handleMoreAction = async (command, paper) => {
-  switch (command) {
-    case 'download':
-      downloadPaperFile(paper)
-      break
-    case 'history':
-      viewPaperHistory(paper)
-      break
-    case 'delete':
-      deletePaper(paper)
-      break
-  }
-}
+// 更多操作下拉已移除
 
 // 下载论文文件
+const resolveFileUrl = (pathOrUrl) => {
+  if (!pathOrUrl) return ''
+  if (String(pathOrUrl).startsWith('http')) return pathOrUrl
+  const { protocol, hostname, port } = window.location
+  const origin = port === '8080' ? `${protocol}//${hostname}:3000` : `${protocol}//${hostname}${port ? ':'+port : ''}`
+  if (String(pathOrUrl).startsWith('/uploads')) return `${origin}${pathOrUrl}`
+  if (String(pathOrUrl).startsWith('uploads')) return `${origin}/${pathOrUrl}`
+  return `${origin}${pathOrUrl}`
+}
+
+const previewPaperFile = (paper) => {
+  const url = resolveFileUrl(paper.file_url || paper.file_path)
+  if (!url) return ElMessage.error('文件不存在')
+  window.open(url, '_blank')
+}
+
 const downloadPaperFile = (paper) => {
-  if (paper.file_url) {
-    window.open(paper.file_url, '_blank')
-  } else {
-    ElMessage.error('文件不存在')
+  const url = resolveFileUrl(paper.file_url || paper.file_path)
+  if (!url) return ElMessage.error('文件不存在')
+  window.open(`/api/papers/${paper.id}/download`, '_blank')
+}
+
+// 草稿提交审核
+const submitForAudit = async (paper) => {
+  try {
+    await ElMessageBox.confirm(
+      `确定要提交《${paper.title}》进行审核吗？提交后将无法编辑。`,
+      '确认提交',
+      { confirmButtonText: '确定提交', cancelButtonText: '取消', type: 'warning' }
+    )
+    await papersApi.updatePaper(paper.id, { status: 'pending' })
+    ElMessage.success('已提交审核')
+    loadPapers()
+  } catch (e) {
+    if (e !== 'cancel') ElMessage.error('提交失败')
   }
 }
 
@@ -618,15 +803,15 @@ const loadPapers = async () => {
     }
     
     const response = await papersApi.getMyPapers(params)
+    const payload = response.data?.data || {}
+    papersList.value = payload.papers || []
+    pagination.total = payload.pagination?.total || 0
     
-    papersList.value = response.data.papers || []
-    pagination.total = response.data.total || 0
-    
-    // 更新统计信息
-    stats.total = response.data.stats?.total || 0
-    stats.approved = response.data.stats?.approved || 0
-    stats.pending = response.data.stats?.pending || 0
-    stats.draft = response.data.stats?.draft || 0
+    // 简单统计（客户端计算）
+    stats.total = papersList.value.length
+    stats.approved = papersList.value.filter(p => p.status === 'approved').length
+    stats.pending = papersList.value.filter(p => p.status === 'pending').length
+    stats.draft = papersList.value.filter(p => p.status === 'draft').length
     
   } catch (error) {
     console.error('加载论文列表失败:', error)
@@ -688,7 +873,7 @@ const loadPapers = async () => {
 const loadPaperDetail = async (paperId) => {
   try {
     const response = await papersApi.getPaperDetail(paperId)
-    currentPaper.value = response.data.paper
+    currentPaper.value = response.data?.data
   } catch (error) {
     console.error('加载论文详情失败:', error)
     // 模拟审核记录
@@ -858,6 +1043,9 @@ onMounted(() => {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+.action-buttons.compact .el-button + .el-button {
+  margin-left: 4px;
 }
 
 .batch-actions {

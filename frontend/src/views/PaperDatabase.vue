@@ -70,9 +70,9 @@
               <div class="paper-title">{{ row.title }}</div>
               <div class="paper-meta">
                 <el-tag size="small">{{ getTypeText(row.type) }}</el-tag>
-                <span class="journal-name">{{ row.journal }}</span>
-                <el-tag size="small" :type="getPartitionType(row.partition)">
-                  {{ row.partition }}分区
+                <span class="journal-name">{{ row.journal_name }}</span>
+                <el-tag size="small" :type="getPartitionType(row.partition_info)">
+                  {{ row.partition_info }}分区
                 </el-tag>
               </div>
             </div>
@@ -80,18 +80,15 @@
         </el-table-column>
         <el-table-column prop="first_author" label="第一作者" width="120" />
         <el-table-column prop="publish_year" label="发表年度" width="100" />
-        <el-table-column prop="approved_at" label="审核时间" width="120">
+        <el-table-column prop="audit_time" label="审核时间" width="120">
           <template #default="{ row }">
-            {{ formatDate(row.approved_at) }}
+            {{ formatDate(row.audit_time) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="100">
           <template #default="{ row }">
             <el-button text type="primary" size="small" @click="viewPaper(row)">
               查看详情
-            </el-button>
-            <el-button text type="info" size="small" @click="downloadFile(row)">
-              下载
             </el-button>
           </template>
         </el-table-column>
@@ -107,12 +104,102 @@
         />
       </div>
     </div>
+
+    <!-- 详情抽屉 -->
+    <el-drawer
+      v-model="detailDrawer"
+      title="论文详情"
+      direction="rtl"
+      size="60%"
+    >
+      <div v-if="currentPaper" class="paper-detail">
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="论文标题">
+            {{ currentPaper.title }}
+          </el-descriptions-item>
+          <el-descriptions-item label="论文类型">
+            {{ getTypeText(currentPaper.type) }}
+          </el-descriptions-item>
+          <el-descriptions-item label="期刊名称">
+            {{ currentPaper.journal_name || '未填写' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="期刊分区">
+            <el-tag v-if="currentPaper.partition_info" :type="getPartitionType(currentPaper.partition_info)">
+              {{ currentPaper.partition_info }}分区
+            </el-tag>
+            <span v-else>未填写</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="ISSN编号">
+            {{ currentPaper.issn || '未填写' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="第一作者">
+            {{ currentPaper.first_author || '未填写' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="通讯作者">
+            {{ currentPaper.corresponding_author || '未填写' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="发表年度">
+            {{ currentPaper.publish_year || '未填写' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="DOI">
+            {{ currentPaper.doi || '未填写' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="审核时间">
+            {{ formatDate(currentPaper.audit_time) }}
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <!-- 附件预览与下载 -->
+        <div v-if="hasFile" class="attachment-actions" style="margin-top: 16px;">
+          <h3>附件</h3>
+          <el-space>
+            <el-button type="primary" size="small" @click="previewPaperFile(currentPaper)">
+              <el-icon><View /></el-icon>
+              在线预览
+            </el-button>
+            <el-button type="info" size="small" @click="downloadPaperFile(currentPaper)">
+              <el-icon><Download /></el-icon>
+              下载文件
+            </el-button>
+            <el-button type="success" size="small" @click="openFileInNewTab">
+              <el-icon><Link /></el-icon>
+              新窗口打开
+            </el-button>
+          </el-space>
+          <div class="file-info" style="font-size: 12px; color: #666; margin-top: 8px;" v-if="resolvedFileUrl">
+            文件名：{{ currentPaper.file_name || getFileNameFromUrl(resolvedFileUrl) }} | 来源：{{ resolvedFileUrl }}
+          </div>
+
+          <!-- 内嵌预览区域（参考审核页样式，不额外弹窗） -->
+          <div class="file-preview-container" style="margin-top: 12px;">
+            <div v-if="!previewError && previewUrl" class="file-preview-content" style="background: #f5f5f5; border: 1px solid var(--border-light); border-radius: 8px; overflow: hidden;">
+              <iframe
+                :src="getPreviewUrl(previewUrl)"
+                width="100%"
+                height="560px"
+                frameborder="0"
+                @error="handlePreviewError"
+              ></iframe>
+            </div>
+
+            <div v-else-if="previewError" class="preview-error" style="display:flex; justify-content:center; align-items:center; height: 560px; background:#fafafa; border-radius:8px; border:2px dashed #ddd;">
+              <el-empty description="文件预览失败">
+                <div>
+                  <p>{{ previewError }}</p>
+                </div>
+              </el-empty>
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { papersApi } from '../api/papers'
+import api from '../api'
 import { ElMessage } from 'element-plus'
 import dayjs from 'dayjs'
 
@@ -152,16 +239,112 @@ const handleSelectionChange = (selection) => {
   selectedPapers.value = selection
 }
 
-const viewPaper = (paper) => {
-  ElMessage.info('查看详情功能开发中...')
+// 详情抽屉
+const detailDrawer = ref(false)
+const currentPaper = ref(null)
+
+const getBackendOrigin = () => {
+  const { protocol, hostname, port } = window.location
+  if (port === '8080') return `${protocol}//${hostname}:3000`
+  return `${protocol}//${hostname}${port ? ':' + port : ''}`
 }
 
-const downloadFile = (paper) => {
-  if (paper.file_url) {
-    window.open(paper.file_url, '_blank')
-  } else {
-    ElMessage.error('文件不存在')
+const resolveFileUrl = (pathOrUrl) => {
+  if (!pathOrUrl) return ''
+  if (String(pathOrUrl).startsWith('http')) return pathOrUrl
+  if (String(pathOrUrl).startsWith('/uploads')) return `${getBackendOrigin()}${pathOrUrl}`
+  if (String(pathOrUrl).startsWith('uploads')) return `${getBackendOrigin()}/${pathOrUrl}`
+  return `${getBackendOrigin()}${pathOrUrl}`
+}
+
+const hasFile = computed(() => !!(currentPaper.value?.file_url || currentPaper.value?.file_path))
+const resolvedFileUrl = computed(() => resolveFileUrl(currentPaper.value?.file_url || currentPaper.value?.file_path))
+
+const getFileNameFromUrl = (url) => {
+  if (!url) return ''
+  try {
+    const parts = url.split('/')
+    const name = parts[parts.length - 1]
+    return name.includes('%') ? decodeURIComponent(name) : name
+  } catch {
+    return ''
   }
+}
+
+const previewUrl = ref('')
+const previewError = ref('')
+const currentFileInfo = ref(null)
+
+const getPreviewUrl = (url) => {
+  if (!url) return ''
+  if (url.toLowerCase().includes('.pdf')) return `${url}#view=FitH&toolbar=1&navpanes=1`
+  return url
+}
+
+const handlePreviewError = () => {
+  previewError.value = '文件预览失败，可能是文件格式不支持或文件已损坏'
+}
+
+const refreshPreview = () => {
+  previewError.value = ''
+  const url = previewUrl.value
+  previewUrl.value = ''
+  setTimeout(() => { previewUrl.value = url }, 100)
+}
+
+const previewPaperFile = (paper) => {
+  const url = resolveFileUrl(paper.file_url || paper.file_path)
+  if (!url) return ElMessage.error('文件不存在')
+  previewUrl.value = url
+  previewError.value = ''
+  currentFileInfo.value = {
+    name: currentPaper.value?.file_name || getFileNameFromUrl(url) || `${currentPaper.value?.title || 'paper'}.pdf`,
+    type: url.toLowerCase().split('.').pop()
+  }
+}
+
+const openFileInNewTab = () => {
+  const url = resolvedFileUrl.value
+  if (url) window.open(url, '_blank')
+}
+
+const downloadPaperFile = async (paper) => {
+  if (!paper?.id) return ElMessage.error('无效的论文ID')
+  try {
+    const response = await api.get(`/papers/${paper.id}/download`, { responseType: 'blob' })
+    const blob = new Blob([response.data])
+    const disp = response.headers['content-disposition'] || response.headers['Content-Disposition']
+    let filename = paper.file_name || 'paper'
+    if (disp) {
+      const match = /filename\*=UTF-8''([^;]+)|filename="?([^;"]+)"?/i.exec(disp)
+      const raw = match?.[1] || match?.[2]
+      if (raw) {
+        try { filename = decodeURIComponent(raw) } catch { filename = raw }
+      }
+    }
+    const link = document.createElement('a')
+    const objectUrl = window.URL.createObjectURL(blob)
+    link.href = objectUrl
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(objectUrl)
+  } catch (e) {
+    // 失败则直接打开静态地址
+    const url = resolveFileUrl(paper.file_url || paper.file_path)
+    if (url) window.open(url, '_blank')
+  }
+}
+
+const viewPaper = async (paper) => {
+  try {
+    const resp = await papersApi.getPaperDetail(paper.id)
+    currentPaper.value = resp.data?.data || paper
+  } catch (e) {
+    currentPaper.value = paper
+  }
+  detailDrawer.value = true
 }
 
 const exportSelected = () => {
@@ -179,9 +362,9 @@ const loadPapers = async () => {
       page: pagination.current,
       pageSize: pagination.pageSize
     })
-    
-    papersList.value = response.data.papers || []
-    pagination.total = response.data.total || 0
+    const payload = response.data?.data || {}
+    papersList.value = payload.papers || []
+    pagination.total = payload.pagination?.total || 0
   } catch (error) {
     // 模拟数据
     papersList.value = [

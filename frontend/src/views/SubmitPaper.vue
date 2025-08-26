@@ -48,23 +48,28 @@
             </el-select>
           </el-form-item>
           
-          <el-form-item label="发表年度" prop="publishYear">
-            <el-date-picker
-              v-model="paperForm.publishYear"
-              type="year"
-              placeholder="请选择发表年度"
-              format="YYYY"
-              value-format="YYYY"
-            />
-          </el-form-item>
-          
-          <el-form-item label="语种" prop="language">
-            <el-select v-model="paperForm.language" placeholder="请选择语种">
-              <el-option label="中文" value="chinese" />
-              <el-option label="英文" value="english" />
-              <el-option label="其他" value="other" />
-            </el-select>
-          </el-form-item>
+          <el-row :gutter="16">
+            <el-col :span="12">
+              <el-form-item label="发表年度" prop="publishYear">
+                <el-date-picker
+                  v-model="paperForm.publishYear"
+                  type="year"
+                  placeholder="请选择发表年度"
+                  format="YYYY"
+                  value-format="YYYY"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="语种" prop="language">
+                <el-select v-model="paperForm.language" placeholder="请选择语种">
+                  <el-option label="中文" value="chinese" />
+                  <el-option label="英文" value="english" />
+                  <el-option label="其他" value="other" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
           
           <el-form-item label="DOI" prop="doi">
             <el-input
@@ -167,10 +172,10 @@
             />
           </el-form-item>
           
-          <el-form-item label="第一通讯作者" prop="correspondingAuthor">
+          <el-form-item label="通讯作者" prop="correspondingAuthor">
             <el-input
               v-model="paperForm.correspondingAuthor"
-              placeholder="第一通讯作者姓名"
+              placeholder="通讯作者姓名"
             />
           </el-form-item>
           
@@ -319,7 +324,7 @@
 
 <script setup>
 import { ref, reactive, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
 import { papersApi } from '@/api/papers'
@@ -327,6 +332,7 @@ import { journalsApi } from '@/api/journals'
 import JournalSelector from '@/components/JournalSelector.vue'
 
 const router = useRouter()
+const route = useRoute()
 
 // 响应式数据
 const paperFormRef = ref(null)
@@ -341,6 +347,8 @@ const uploadProgress = ref(0)
 const uploadStatus = ref('success')
 const savingDraft = ref(false)
 const submitting = ref(false)
+const isEditMode = ref(false)
+const editingPaperId = ref(null)
 
 // 表单数据
 const paperForm = reactive({
@@ -383,6 +391,20 @@ const paperRules = {
   ],
   correspondingAuthor: [
     { required: true, message: '请输入第一通讯作者', trigger: 'blur' }
+  ],
+  allAuthors: [
+    { required: true, message: '请输入所有作者', trigger: 'blur' },
+    { validator: (_rule, value, callback) => {
+        const names = String(value || '')
+          .split(';')
+          .map(s => s.trim())
+          .filter(Boolean)
+        if (names.length < 1) {
+          callback(new Error('至少需要一位作者'))
+        } else {
+          callback()
+        }
+      }, trigger: 'blur' }
   ]
 }
 
@@ -573,7 +595,7 @@ const getStepFields = (step) => {
   const stepFieldsMap = {
     0: ['title', 'type', 'publishYear', 'language'],
     1: ['journalName'],
-    2: ['firstAuthor', 'correspondingAuthor'],
+    2: ['firstAuthor', 'correspondingAuthor', 'allAuthors'],
     3: [],
     4: []
   }
@@ -586,25 +608,37 @@ const saveDraft = async () => {
   
   try {
     // 1. 先创建论文草稿记录
+    const buildAuthors = () => {
+      const names = String(paperForm.allAuthors || '')
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s)
+      const institutions = String(paperForm.authorInstitutions || '')
+        .split(';')
+        .map(s => s.trim())
+      return names.map((name, idx) => ({
+        name,
+        institution: institutions[idx] || '',
+        email: ''
+      }))
+    }
     const paperData = {
       title: paperForm.title,
       type: paperForm.type,
-      publish_year: paperForm.publishYear,
-      language: paperForm.language,
+      publish_year: Number(paperForm.publishYear) || undefined,
       doi: paperForm.doi,
       journal_name: paperForm.journalName,
-      journal_id: paperForm.journalId,
+      issn: paperForm.issn,
+      journal_id: paperForm.journalId ? String(paperForm.journalId) : '',
       partition_info: paperForm.partition,
-      institution_order: paperForm.institutionOrder,
       first_author: paperForm.firstAuthor,
       corresponding_author: paperForm.correspondingAuthor,
-      authors: paperForm.allAuthors,
-      author_institutions: paperForm.authorInstitutions,
+      authors: buildAuthors(),
       status: 'draft'
     }
     
     const createResponse = await papersApi.submitPaper(paperData)
-    const paperId = createResponse.data.id
+    const paperId = createResponse.data?.data?.id
     
     // 2. 如果有文件，上传文件
     if (selectedFile.value) {
@@ -629,38 +663,57 @@ const saveDraft = async () => {
 // 提交论文
 const submitPaper = async () => {
   try {
-    await ElMessageBox.confirm(
-      '确定要提交论文进行审核吗？提交后将无法修改。',
-      '确认提交',
-      {
-        confirmButtonText: '确定提交',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }
-    )
+    if (!isEditMode.value) {
+      await ElMessageBox.confirm(
+        '确定要提交论文进行审核吗？提交后将无法修改。',
+        '确认提交',
+        {
+          confirmButtonText: '确定提交',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+    }
     
     submitting.value = true
     
-    // 1. 先创建论文记录
+    // 1. 构建论文数据（创建/更新共用）
+    const buildAuthors = () => {
+      const names = String(paperForm.allAuthors || '')
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s)
+      const institutions = String(paperForm.authorInstitutions || '')
+        .split(';')
+        .map(s => s.trim())
+      return names.map((name, idx) => ({
+        name,
+        institution: institutions[idx] || '',
+        email: ''
+      }))
+    }
     const paperData = {
       title: paperForm.title,
       type: paperForm.type,
-      publish_year: paperForm.publishYear,
-      language: paperForm.language,
+      publish_year: Number(paperForm.publishYear) || undefined,
       doi: paperForm.doi,
       journal_name: paperForm.journalName,
-      journal_id: paperForm.journalId,
+      issn: paperForm.issn,
+      journal_id: paperForm.journalId ? String(paperForm.journalId) : '',
       partition_info: paperForm.partition,
-      institution_order: paperForm.institutionOrder,
       first_author: paperForm.firstAuthor,
       corresponding_author: paperForm.correspondingAuthor,
-      authors: paperForm.allAuthors,
-      author_institutions: paperForm.authorInstitutions,
-      status: 'pending'
+      authors: buildAuthors(),
+      status: isEditMode.value ? undefined : 'pending'
     }
     
-    const createResponse = await papersApi.submitPaper(paperData)
-    const paperId = createResponse.data.id
+    let paperId = editingPaperId.value
+    if (isEditMode.value) {
+      await papersApi.updatePaper(editingPaperId.value, paperData)
+    } else {
+      const createResponse = await papersApi.submitPaper(paperData)
+      paperId = createResponse.data?.data?.id
+    }
     
     // 2. 如果有文件，上传文件
     if (selectedFile.value) {
@@ -674,18 +727,51 @@ const submitPaper = async () => {
       }
     }
     
-    ElMessage.success('论文提交成功，请等待审核')
+    ElMessage.success(isEditMode.value ? '论文更新成功' : '论文提交成功，请等待审核')
     router.push('/my-papers')
   } catch (error) {
     if (error !== 'cancel') {
       console.error('提交失败:', error)
-      ElMessage.error('提交失败，请稍后重试')
+      ElMessage.error(isEditMode.value ? '更新失败，请稍后重试' : '提交失败，请稍后重试')
     }
   } finally {
     submitting.value = false
     uploadProgress.value = 0
   }
 }
+
+// 加载编辑模式
+const loadEditingPaper = async (id) => {
+  try {
+    const resp = await papersApi.getPaperDetail(id)
+    const p = resp.data?.data || {}
+    paperForm.title = p.title || ''
+    paperForm.type = p.type || ''
+    paperForm.publishYear = p.publish_year ? String(p.publish_year) : ''
+    paperForm.language = p.language || ''
+    paperForm.doi = p.doi || ''
+    paperForm.journalName = p.journal_name || ''
+    paperForm.issn = p.issn || ''
+    paperForm.partition = p.partition_info || ''
+    paperForm.firstAuthor = p.first_author || ''
+    paperForm.correspondingAuthor = p.corresponding_author || ''
+    const authors = Array.isArray(p.authors) ? p.authors : []
+    paperForm.allAuthors = authors.map(a => a.name).filter(Boolean).join(';')
+    paperForm.authorInstitutions = authors.map(a => a.institution || '').join(';')
+  } catch (e) {
+    console.error('加载编辑论文失败:', e)
+    ElMessage.error('加载论文信息失败')
+  }
+}
+
+onMounted(() => {
+  const editId = route.query.edit
+  if (editId) {
+    isEditMode.value = true
+    editingPaperId.value = Number(editId)
+    loadEditingPaper(editingPaperId.value)
+  }
+})
 </script>
 
 <style scoped>

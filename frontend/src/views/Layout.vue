@@ -18,7 +18,22 @@
         @select="handleMenuSelect"
       >
         <template v-for="item in menuItems" :key="item.name">
-          <el-menu-item
+          <el-sub-menu v-if="item.children && item.children.length" :index="item.name">
+            <template #title>
+              <el-icon><component :is="item.icon" /></el-icon>
+              <span>{{ item.title }}</span>
+            </template>
+            <el-menu-item
+              v-for="child in item.children"
+              :key="child.name"
+              :index="child.path"
+              :class="{ 'is-active': $route.path === child.path }"
+            >
+              <el-icon><component :is="child.icon" /></el-icon>
+              <template #title>{{ child.title }}</template>
+            </el-menu-item>
+          </el-sub-menu>
+          <el-menu-item v-else
             :index="item.path"
             :class="{ 'is-active': $route.path === item.path }"
           >
@@ -358,12 +373,41 @@ const formatTime = (time) => {
 }
 
 // 加载未读通知数量
+// 节流 + 429重试
+let unreadLoading = false
+let lastUnreadAt = 0
+let unreadBackoffUntil = 0
 const loadUnreadCount = async () => {
-  try {
-    const response = await notificationsApi.getUnreadCount()
-    unreadCount.value = response.data.count || 0
-  } catch (error) {
-    console.error('加载未读通知数量失败:', error)
+  const now = Date.now()
+  // 若处于退避期，直接跳过
+  if (now < unreadBackoffUntil) return
+  if (unreadLoading || now - lastUnreadAt < 2000) return
+  unreadLoading = true
+  lastUnreadAt = now
+  const maxRetries = 3
+  let attempt = 0
+  while (attempt < maxRetries) {
+    try {
+      const response = await notificationsApi.getUnreadCount()
+      const data = response.data?.data
+      unreadCount.value = (data && typeof data.count === 'number') ? data.count : (response.data.count || 0)
+      break
+    } catch (error) {
+      if (error?.response?.status === 429) {
+        // 告警一次并进入退避期（300秒），减少服务端压力
+        unreadBackoffUntil = Date.now() + 300000
+        if (attempt < maxRetries - 1) {
+          const backoff = Math.pow(2, attempt) * 300
+          await new Promise(r => setTimeout(r, backoff))
+          attempt++
+          continue
+        }
+      }
+      console.error('加载未读通知数量失败:', error)
+      break
+    } finally {
+      unreadLoading = false
+    }
   }
 }
 
@@ -378,8 +422,8 @@ watch(() => route.path, () => {
 onMounted(async () => {
   await loadUnreadCount()
   
-  // 定期检查未读通知
-  setInterval(loadUnreadCount, 30000) // 30秒检查一次
+  // 定期检查未读通知：调整到120秒，避免429错误
+  setInterval(loadUnreadCount, 120000)
   
   // 响应式处理
   const handleResize = () => {

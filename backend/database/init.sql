@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS papers (
     corresponding_author VARCHAR(100) COMMENT '通讯作者',
     journal_name VARCHAR(200) COMMENT '期刊名称',
     journal_id VARCHAR(100) COMMENT '期刊ID',
+    issn VARCHAR(20) COMMENT 'ISSN号',
     partition_info VARCHAR(50) COMMENT '分区信息',
     publish_year YEAR COMMENT '发表年份',
     publish_date DATE COMMENT '发表日期',

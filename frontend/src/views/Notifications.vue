@@ -55,7 +55,7 @@
         
         <div class="notification-footer">
           <div class="notification-meta">
-            <span>发布者：{{ notification.author }}</span>
+            <span>发布者：{{ notification.author_name || notification.author }}</span>
             <span>创建时间：{{ formatDateTime(notification.created_at) }}</span>
           </div>
           <div class="notification-stats">
@@ -121,7 +121,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { notificationsApi } from '../api/notifications'
+import api from '../api/index'
 import dayjs from 'dayjs'
 
 const notificationDialog = ref(false)
@@ -193,17 +193,18 @@ const submitNotification = async () => {
     submitting.value = true
     
     if (editingNotification.value) {
-      await notificationsApi.updateNotification(editingNotification.value.id, notificationForm)
+      await api.put(`/notifications/${editingNotification.value.id}`, notificationForm)
       ElMessage.success('通知更新成功')
     } else {
-      await notificationsApi.createNotification(notificationForm)
+      await api.post('/notifications', notificationForm)
       ElMessage.success('通知发布成功')
     }
     
     notificationDialog.value = false
     loadNotifications()
   } catch (error) {
-    ElMessage.error('操作失败')
+    console.error('通知操作失败:', error)
+    ElMessage.error('操作失败: ' + (error.response?.data?.message || error.message))
   } finally {
     submitting.value = false
   }
@@ -211,21 +212,23 @@ const submitNotification = async () => {
 
 const publishNotification = async (notification) => {
   try {
-    await notificationsApi.toggleNotificationStatus(notification.id, 'published')
+    await api.put(`/notifications/${notification.id}/publish`)
     ElMessage.success('通知发布成功')
     loadNotifications()
   } catch (error) {
-    ElMessage.error('发布失败')
+    console.error('发布失败:', error)
+    ElMessage.error('发布失败: ' + (error.response?.data?.message || error.message))
   }
 }
 
 const unpublishNotification = async (notification) => {
   try {
-    await notificationsApi.toggleNotificationStatus(notification.id, 'draft')
+    await api.put(`/notifications/${notification.id}/unpublish`)
     ElMessage.success('通知已撤回')
     loadNotifications()
   } catch (error) {
-    ElMessage.error('撤回失败')
+    console.error('撤回失败:', error)
+    ElMessage.error('撤回失败: ' + (error.response?.data?.message || error.message))
   }
 }
 
@@ -235,12 +238,13 @@ const deleteNotification = async (notification) => {
       type: 'warning'
     })
     
-    await notificationsApi.deleteNotification(notification.id)
+    await api.delete(`/notifications/${notification.id}`)
     ElMessage.success('删除成功')
     loadNotifications()
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('删除失败')
+      console.error('删除失败:', error)
+      ElMessage.error('删除失败: ' + (error.response?.data?.message || error.message))
     }
   }
 }
@@ -251,19 +255,38 @@ const formatDateTime = (datetime) => {
 
 const loadNotifications = async () => {
   try {
-    const response = await notificationsApi.getNotifications()
-    notificationsList.value = response.data.notifications || []
+    const response = await api.get('/notifications')
+    // 处理不同的响应格式
+    if (response.data.data?.notifications) {
+      notificationsList.value = response.data.data.notifications
+    } else if (Array.isArray(response.data.data)) {
+      notificationsList.value = response.data.data
+    } else if (Array.isArray(response.data)) {
+      notificationsList.value = response.data
+    } else {
+      notificationsList.value = []
+    }
   } catch (error) {
-    // 模拟数据
+    console.error('加载通知失败:', error)
+    // 使用模拟数据
     notificationsList.value = [
       {
         id: 1,
         title: '系统维护通知',
         content: '系统将于本周日凌晨2:00-4:00进行维护升级，届时将无法访问，请提前做好相关准备工作。',
         status: 'published',
-        author: '系统管理员',
+        author_name: '系统管理员',
         created_at: '2024-01-15 10:00:00',
         read_count: 125
+      },
+      {
+        id: 2,
+        title: '论文提交截止日期提醒',
+        content: '本月论文提交截止日期为月底，请各位研究人员及时提交论文材料。',
+        status: 'published',
+        author_name: '论文管理员',
+        created_at: '2024-01-20 09:30:00',
+        read_count: 89
       }
     ]
   }
